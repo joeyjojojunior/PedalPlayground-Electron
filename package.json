@@ -23,13 +23,15 @@
 		"gulp-watch": "^4.3.5"
 	},
 	"devDependencies": {
+		"electron": "^17.0.0",
 		"gulp-responsive": "^2.9.0",
 		"http-server": "^0.11.1",
 		"prettier": "2.2.1",
 		"sass": "^1.49.7"
 	},
 	"scripts": {
-		"serve": "http-server ./ -o",
+		"start": "electron ./electron/main.js",
+		"serve": "http-server ./index.html -o",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"repository": {

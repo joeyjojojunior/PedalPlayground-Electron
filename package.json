@@ -6,9 +6,11 @@
 	"dependencies": {
 		"bootstrap": "^5.1.3",
 		"bootstrap-sass": "^3.4.1",
-		"bower": "^1.8.8",		
+		"bower": "^1.8.8",
 		"electron": "^17.0.0",
-		"electron-packager": "^15.4.0",
+		"electron-reload": "^2.0.0-alpha.1",
+		"ev-emitter": "^2.1.2",
+		"get-size": "^3.0.0",
 		"gulp": "^4.0.2",
 		"gulp-cached": "^1.1.1",
 		"gulp-concat": "^2.6.1",
@@ -23,17 +25,20 @@
 		"gulp-responsive": "^3.0.1",
 		"gulp-sass": "^5.1.0",
 		"gulp-util": "^3.0.8",
-		"gulp-watch": "^5.0.1"
+		"gulp-watch": "^5.0.1",
+		"jquery": "^3.6.0",
+		"unidragger": "^2.4.0",
+		"unipointer": "^2.4.0"
 	},
 	"devDependencies": {
-		"@electron-forge/cli": "^6.0.0-beta.63",
+		"electron-packager": "^15.4.0",
 		"http-server": "^0.11.1",
 		"prettier": "2.2.1",
 		"sass": "^1.49.7"
 	},
 	"overrides": {
 		"gulp-responsive": {
-		  "sharp": "^0.30.1"
+			"sharp": "^0.30.1"
 		}
 	},
 	"scripts": {

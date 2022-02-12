@@ -134,7 +134,7 @@
 											class="btn btn-primary btn-block"
 											type="submit"
 											name=""
-											value="Add Custom Pedalboard1"
+											value="Add Custom Pedalboard"
 										/>
 									</form>
 								</div>
@@ -239,6 +239,17 @@
 					<!-- sidebar__scroll -->
 				</div>
 				<!-- sidebar__inner -->
+
+				<div class="sidebar__section">
+					<h4>Pedalboard Saving</h4>
+					<button id="save-pedalboard-btn" class="btn btn-primary btn-block">
+						Save Pedalboard
+					</button>
+					<p></p>
+					<button id="load-pedalboard-btn" class="btn btn-primary btn-block">
+						Load Pedalboard
+					</button>
+				</div>
 			</div>
 
 			<!-- sidebar -->
@@ -284,6 +295,8 @@
 				</div>
 			</div>
 
+		
+
 			<div id="canvas-scale-modal" class="modal fade" tabindex="-1" role="dialog">
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
@@ -317,6 +330,10 @@
 			</div>
 		</div>
 
+		<script>
+			window.jQuery = window.$ = require('jquery');
+		</script>
+	
 		<script type="text/javascript" src="public/scripts/scripts-min.js"></script>
 		<script>
 			(

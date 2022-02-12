@@ -1,3 +1,5 @@
+const { ipcRenderer, webFrame } = window.require('electron');
+
 var pedalImagePath = "public/images/pedals/";
 var pedalboardImagePath = "public/images/pedalboards/";
 
@@ -277,6 +279,16 @@ $(document).ready(function () {
 		}
 	});
 
+	// IG
+	$("body").on("click", "#save-pedalboard-btn", function (event) {
+		savePedalCanvasToFile();
+	})
+
+	$("body").on("click", "#load-pedalboard-btn", function (event) {
+		loadPedalCanvasFromFile();
+	})
+
+
 	// Add custom pedalboard
 	$("body").on("click", "#add-custom-pedalboard .btn", function (event) {
 		var serial = GenRandom.Job();
@@ -470,6 +482,42 @@ function readyCanvas(pedal) {
 
 	savePedalCanvas();
 }
+
+
+
+
+
+
+
+
+// IG
+function savePedalCanvasToFile(e) {
+	let canvas = JSON.stringify($(".canvas").html());
+	ipcRenderer.send('save-canvas', canvas);
+	
+}
+
+ipcRenderer.on('save-canvas-saved', (event, reply) => {
+	console.log(reply);
+});
+
+function loadPedalCanvasFromFile(e) {
+	ipcRenderer.send('load-canvas');
+}
+
+ipcRenderer.on('load-canvas-loaded', (event, canvas) => {
+	console.log("canvas: " + canvas);
+	var savedPedalCanvas = JSON.parse(canvas);
+	$(".canvas").html(savedPedalCanvas);
+	readyCanvas();
+});
+
+
+
+
+
+
+
 
 function savePedalCanvas() {
 	console.log("Canvas Saved!");

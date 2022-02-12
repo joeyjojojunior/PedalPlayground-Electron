@@ -18,7 +18,9 @@ require('electron-reload')(__dirname,
   }
 );
 
+const presetDir = "./presets/"
 let isDialogOpen = false;
+
 
 const createWindow = () => {
   // Create the browser window.
@@ -39,6 +41,16 @@ const createWindow = () => {
  
   mainWindow.webContents.on('did-finish-load', () => {
     ipcMain.on('save-preset', (event, preset, presetName) => {
+      fs.mkdir(presetDir, e => {
+        if (e && e.code === 'EEXIST') {
+          console.log("Directory already exists.");
+        } else if(e) {
+            console.error(e);
+        } else {
+            console.log('Success');
+        }
+      });
+
       const fileName = (presetName.length > 0) ? presetName.replaceAll(' ', '_') : "unnamed_preset";
       fs.writeFile(`./presets/${fileName}.json`, preset, function (err) {
         if (err) {

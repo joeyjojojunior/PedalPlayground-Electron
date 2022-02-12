@@ -69,12 +69,12 @@ const createWindow = () => {
       }).then((pathObj) => {
           if (!pathObj.canceled) {              
               let filePath = pathObj.filePaths[0]
-              fs.readFile(filePath, 'utf8', (err, canvas) => {
+              fs.readFile(filePath, 'utf8', (err, preset) => {
                 if (err) {
                     console.error(err)
                     return
                 }
-                event.reply('load-preset-loaded', canvas);
+                event.reply('load-preset-loaded', preset);
               })
           }
           isDialogOpen = false;

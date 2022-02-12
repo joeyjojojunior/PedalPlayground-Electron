@@ -115,6 +115,8 @@ $(document).ready(function () {
 		$(".canvas").empty();
 		$("#pedalboard-saving .preset-name").val('') // new
 		$("#clear-canvas-modal").modal("hide");
+		isPedalboardLocked = false;
+		setPedalboardsLockStatus();
 		savePedalCanvas();
 	});
 
@@ -295,25 +297,18 @@ $(document).ready(function () {
 
 	$("body").on("click", "#load-pedalboard-btn", function (event) {
 		loadPresetFromFile();
+
 	})
 
 	$("body").on("click", "#lock-pedalboards-btn", function (event) {
 		isPedalboardLocked = !isPedalboardLocked;
-		var isEnabled = !isPedalboardLocked ? "enable" : "disable";
-		$draggable.filter( function( i, elem ) {
-			return elem.classList.contains("pedalboard");
-		}).draggabilly(isEnabled);
-		/*
-		if (event.target.classList.contains("pedalboard")) {
-			var isEnabled = (!isPedalboardLocked) ? "enable" : "disable";
-			$draggable.filter( function( i, elem ) {
-				return elem == event.target;
-			}).draggabilly(isEnabled);
-		}
-		*/
-		console.log($draggable)
+		setPedalboardsLockStatus();
 	})
 
+	// Unset btn focus after click
+	$(".btn").mouseup(function(){
+		$(this).blur();
+	})
 
 
 
@@ -468,6 +463,28 @@ $(document).ready(function () {
 	});
 }); // End Document ready
 
+function setPedalboardsLockStatus() {
+	let lockBtn = $("#lock-pedalboards-btn")[0];
+	console.log("isPedalboardUnlocked: " + isPedalboardLocked);
+	if (isPedalboardLocked) {
+		console.log("setlock")
+		lockBtn.innerHTML = "Unlock Pedalboards"
+		lockBtn.classList.remove("btn-primary");
+		lockBtn.classList.add("btn-danger");
+	} else {
+		console.log("setunlock")
+
+		lockBtn.innerHTML = "Lock Pedalboards"
+		lockBtn.classList.add("btn-primary");
+		lockBtn.classList.remove("btn-danger");
+	}
+
+	var isEnabled = !isPedalboardLocked ? "enable" : "disable";
+	$draggable.filter( function( i, elem ) {
+		return elem.classList.contains("pedalboard");
+	}).draggabilly(isEnabled);
+}
+
 function readyCanvas(pedal) {
 	$draggable = $(".canvas .pedal, .canvas .pedalboard").draggabilly({
 		containment: ".canvas",
@@ -479,26 +496,12 @@ function readyCanvas(pedal) {
 	});
 	*/
 
-	$draggable.on("dragStart", (event, pointer) => {
-		/*
-		$draggable.filter( function( i, elem ) {
-			//console.log(elem);
-		}).draggabilly(isEnabled);
-		if (event.target.classList.contains("pedalboard")) {
-			var isEnabled = (!isPedalboardLocked) ? "enable" : "disable";
-			$draggable.filter( function( i, elem ) {
-				return elem == event.target;
-			}).draggabilly(isEnabled);
-		}
-		*/
-	});
 
 	$draggable.on("dragEnd", function (e) {
 		ga("send", "event", "Canvas", "moved", "dragend");
 		savePedalCanvas();
 		
 	});
-
 
 	$draggable.on("staticClick", function (event) {
 		//rotatePedal(this);
@@ -542,8 +545,13 @@ function readyCanvas(pedal) {
 
 // new
 function savePresetToFile(presetName) {
-	var preset = `${presetName}\n${JSON.stringify($(".canvas").html())}`;
-	ipcRenderer.send('save-preset', preset, presetName);
+	var preset = {
+		name: presetName,
+		isPedalboardLocked: isPedalboardLocked,
+		canvasScale: $("#canvas-scale").val(),
+		canvas: JSON.stringify($(".canvas").html())
+	};
+	ipcRenderer.send('save-preset', JSON.stringify(preset), presetName);
 }
 
 ipcRenderer.on('save-preset-saved', (event, reply) => {
@@ -555,13 +563,14 @@ function loadPresetFromFile(e) {
 }
 
 ipcRenderer.on('load-preset-loaded', (event, preset) => {
-	var presetName = preset.split('\n')[0];
-	$("#pedalboard-saving .preset-name").val(presetName); 
+	var presetJSON = JSON.parse(preset);
 
-	var canvas = preset.split('\n')[1];
-	var savedPedalCanvas = JSON.parse(canvas);
-	$(".canvas").html(savedPedalCanvas);
+	$("#pedalboard-saving .preset-name").val(presetJSON.name); 
+	isPedalboardLocked = presetJSON.isPedalboardLocked;
+	$("#canvas-scale").val(presetJSON.canvasScale);
+	$(".canvas").html(JSON.parse(presetJSON.canvas));
 	readyCanvas();
+	setPedalboardsLockStatus();
 });
 
 

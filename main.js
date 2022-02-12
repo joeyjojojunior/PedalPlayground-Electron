@@ -1,10 +1,11 @@
 // main.js
 
 // Modules to control application life and create native browser window
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow } = require('electron');
+const { dialog } = require('electron');
 const electron = require('electron');
 const ipcMain = electron.ipcMain;
-const path = require('path')
+const path = require('path');
 const fs = require('fs');
 
 
@@ -13,6 +14,8 @@ require('electron-reload')(__dirname, {
   // Note that the path to electron may vary according to the main file
   electron: require(`${__dirname}/node_modules/electron`)
 });
+
+let isDialogOpen = false;
 
 const createWindow = () => {
   // Create the browser window.
@@ -31,27 +34,48 @@ const createWindow = () => {
   mainWindow.loadFile('index.html')
 
   mainWindow.webContents.on('did-finish-load', () => {
-    ipcMain.on('save-canvas', (event, canvas) => {
-      fs.writeFile("./app/presets/preset.json", canvas, function (err) {
+    ipcMain.on('save-preset', (event, preset, presetName) => {
+      const fileName = (presetName.length > 0) ? presetName.replaceAll(' ', '_') : "unnamed_preset";
+      fs.writeFile(`./presets/${fileName}.json`, preset, function (err) {
         if (err) {
             console.error(err)
             return
         }
-        event.reply('save-canvas-saved', "Canvas Saved to file!");
+        event.reply('save-preset-saved', "Canvas Saved to file!");
       });    
     });
   });
 
 
-  ipcMain.on('load-canvas', (event) => {
-    console.log("test");
-    fs.readFile("./app/presets/preset.json", 'utf8', (err, canvas) => {
-      if (err) {
-          console.error(err)
-          return
-      }
-      event.reply('load-canvas-loaded', canvas);
-    })
+  ipcMain.on('load-preset', (event) => {
+    console.log("gap: " + app.getAppPath());
+
+    if (!isDialogOpen) {
+      isDialogOpen = true;
+      dialog.showOpenDialog({
+          title: "Select a preset...",
+          properties: ['openFile'],
+          defaultPath: `${app.getAppPath()}/presets`,
+          filters: [
+            {
+              "name": "json",
+              "extensions": ["json"]
+            },
+          ]
+      }).then((pathObj) => {
+          if (!pathObj.canceled) {              
+              let filePath = pathObj.filePaths[0]
+              fs.readFile(filePath, 'utf8', (err, canvas) => {
+                if (err) {
+                    console.error(err)
+                    return
+                }
+                event.reply('load-preset-loaded', canvas);
+              })
+          }
+          isDialogOpen = false;
+      });
+    }
   });
  
 

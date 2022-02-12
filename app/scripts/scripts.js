@@ -111,6 +111,7 @@ $(document).ready(function () {
 
 	$("body").on("click", "#clear-canvas-confirmation", function () {
 		$(".canvas").empty();
+		$("#pedalboard-saving .preset-name").val('') // IG
 		$("#clear-canvas-modal").modal("hide");
 		savePedalCanvas();
 	});
@@ -281,12 +282,15 @@ $(document).ready(function () {
 
 	// IG
 	$("body").on("click", "#save-pedalboard-btn", function (event) {
-		savePedalCanvasToFile();
+		var presetName = $("#pedalboard-saving .preset-name").val();
+		savePresetToFile(presetName);
 	})
 
 	$("body").on("click", "#load-pedalboard-btn", function (event) {
-		loadPedalCanvasFromFile();
+		loadPresetFromFile();
 	})
+
+
 
 
 	// Add custom pedalboard
@@ -491,22 +495,24 @@ function readyCanvas(pedal) {
 
 
 // IG
-function savePedalCanvasToFile(e) {
-	let canvas = JSON.stringify($(".canvas").html());
-	ipcRenderer.send('save-canvas', canvas);
-	
+function savePresetToFile(presetName) {
+	var preset = `${presetName}\n${JSON.stringify($(".canvas").html())}`;
+	ipcRenderer.send('save-preset', preset, presetName);
 }
 
-ipcRenderer.on('save-canvas-saved', (event, reply) => {
+ipcRenderer.on('save-preset-saved', (event, reply) => {
 	console.log(reply);
 });
 
-function loadPedalCanvasFromFile(e) {
-	ipcRenderer.send('load-canvas');
+function loadPresetFromFile(e) {
+	ipcRenderer.send('load-preset');
 }
 
-ipcRenderer.on('load-canvas-loaded', (event, canvas) => {
-	console.log("canvas: " + canvas);
+ipcRenderer.on('load-preset-loaded', (event, preset) => {
+	var presetName = preset.split('\n')[0];
+	$("#pedalboard-saving .preset-name").val(presetName); 
+
+	var canvas = preset.split('\n')[1];
 	var savedPedalCanvas = JSON.parse(canvas);
 	$(".canvas").html(savedPedalCanvas);
 	readyCanvas();

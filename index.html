@@ -34,7 +34,6 @@
 		<header class="site-header">
 			<h1><b>Pedal</b>Playground</h1>
 			<nav>
-				<a href="https://github.com/PedalPlayground/PedalPlayground.github.io/">Change Log</a>
 				<a href="https://www.paypal.me/travlehman" target="_blank">Donate</a>
 				<a
 					class="hidden-xs"
@@ -200,28 +199,22 @@
 							</div>
 						</div>
 
-						<div id="canvas-scale-form" class="sidebar__section form-inline">
+						<div id="canvas-scale-form" class="sidebar__section">
 							<h4>Canvas Scale</h4>
-							<div class="input-group">
-								<div class="input-group-addon input-sm">Scale</div>
+								<div class="input-group-addon">Scale</div>
 								<input
-									class="form-control input-sm"
+									class="form-control"
 									id="canvas-scale"
 									type="number"
 									value="25"
-								/>
-							</div>
-							
+								/>							
 							<a
 								href="#"
 								class="btn btn-sm"
 								data-toggle="modal"
 								data-target="#canvas-scale-modal"
 							>
-								<span
-									class="glyphicon glyphicon-exclamation-sign"
-									aria-hidden="true"
-								></span>
+
 							</a>
 						</div>
 
@@ -235,32 +228,33 @@
 								Clear
 							</button>
 						</div>
+
+						<!-- // IG -->
+						<div class="sidebar__section">
+						<div id="pedalboard-saving">
+							<h4>Pedalboard Saving</h4>
+							<input
+								type="text"
+								class="preset-name form-control"
+								placeholder="Preset name"
+								value=""
+								required
+							/>
+							<p></p>
+							<button id="save-pedalboard-btn" class="btn btn-primary btn-block">
+								Save Pedalboard
+							</button>
+							<p></p>
+							<button id="load-pedalboard-btn" class="btn btn-primary btn-block">
+								Load Pedalboard
+							</button>
+						</div>
+				</div>
 					</div>
 					<!-- sidebar__scroll -->
 				</div>
 				<!-- sidebar__inner -->
 
-				<!-- // IG -->
-				<div class="sidebar__section">
-					<div id="pedalboard-saving">
-						<h4>Pedalboard Saving</h4>
-						<input
-							type="text"
-							class="preset-name form-control"
-							placeholder="Preset name"
-							value=""
-							required
-						/>
-						<p></p>
-						<button id="save-pedalboard-btn" class="btn btn-primary btn-block">
-							Save Pedalboard
-						</button>
-						<p></p>
-						<button id="load-pedalboard-btn" class="btn btn-primary btn-block">
-							Load Pedalboard
-						</button>
-					</div>
-				</div>
 			</div>
 
 			<!-- sidebar -->

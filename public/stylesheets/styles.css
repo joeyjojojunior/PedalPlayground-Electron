@@ -8649,6 +8649,7 @@ th {
 }
 body {
   background: white;
+  overflow: hidden;
 }
 @media (prefers-color-scheme: dark) {
   body {
@@ -8706,8 +8707,6 @@ body {
 .site-body {
   border-top: 1px solid rgba(0, 0, 0, 0.13);
   min-height: 100vh;
-  min-width: 1400px;
-  position: relative;
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-flex;
@@ -8808,6 +8807,10 @@ body {
   flex: 1 1 auto;
 }
 
+.sidebar {
+  position: relative;
+  min-height: 100vh;
+}
 .sidebar .select2-container {
   width: 100%;
 }
@@ -8891,7 +8894,6 @@ body {
 }
 
 .canvas {
-  position: relative;
   overflow: hidden;
   background-image: url("../images/grid.svg");
   background-color: #f8f8f8;
@@ -9279,59 +9281,19 @@ body {
   }
 }
 
-@media (max-width: 1099px) {
-  #canvas-scale-form .input-group-addon {
-    display: none;
-  }
-  #canvas-scale-form input {
-    border-radius: 4px;
-  }
-  #canvas-scale-form .btn-sm, #canvas-scale-form .btn-group-sm > .btn {
-    display: none;
-  }
+#canvas-scale-form .input-group-addon {
+  display: none;
 }
-@media (min-width: 1100px) {
-  #canvas-scale-form {
-    position: fixed;
-    z-index: 2;
-    bottom: 0;
-    right: 0;
-    padding: 7px;
-    margin: 0;
-    border: 0;
-    display: flex;
-    background: rgba(255, 255, 255, 0.5);
-    border: 1px solid rgba(0, 0, 0, 0.12);
-    border-top-left-radius: 5px;
-  }
+#canvas-scale-form input {
+  border-radius: 4px;
 }
-@media (min-width: 1100px) and (prefers-color-scheme: dark) {
-  #canvas-scale-form {
-    background: #282d30;
-    border-color: rgba(255, 255, 255, 0.12);
-  }
-}
-@media (min-width: 1100px) {
-  #canvas-scale-form input {
-    width: 85px;
-  }
-}
-@media (min-width: 1100px) {
-  #canvas-scale-form h5 {
-    line-height: 20px;
-    margin: 3px 8px 0 0;
-  }
-}
-@media (min-width: 1100px) {
-  #canvas-scale-form h4 {
-    display: none;
-  }
+#canvas-scale-form .btn-sm, #canvas-scale-form .btn-group-sm > .btn {
+  display: none;
 }
 
 .sidebar__scroll {
   display: flex;
   flex-direction: column;
-  height: 100%;
 }
 
 .sidebar__tgs {

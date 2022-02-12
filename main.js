@@ -21,18 +21,19 @@ const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 1920,
-    height: 1080,
+    height: 1480,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
       contextIsolation: false
-    }
+    },
   })
 
   // and load the index.html of the app.
   mainWindow.loadURL('http://127.0.0.1:8080/index.html');
   mainWindow.loadFile('index.html')
 
+ 
   mainWindow.webContents.on('did-finish-load', () => {
     ipcMain.on('save-preset', (event, preset, presetName) => {
       const fileName = (presetName.length > 0) ? presetName.replaceAll(' ', '_') : "unnamed_preset";

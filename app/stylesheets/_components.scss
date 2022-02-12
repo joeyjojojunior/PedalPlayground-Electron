@@ -7,12 +7,18 @@ $header-bg-dark: #25292c;
 $canvas-bg-dark: #2e3337;
 $body-color-dark: lighten($dark, 60%);
 
+html {
+	
+
+}
+
 body {
 	background: white;
 	@media (prefers-color-scheme: dark) {
 		background: $header-bg-dark;
 		color: $body-color-dark;
 	}
+	overflow: hidden;
 }
 
 .site-header {
@@ -59,8 +65,6 @@ body {
 .site-body {
 	border-top: $border;
 	min-height: 100vh;
-	min-width: 1400px;
-	position: relative;
 	@include flexbox;
 	@media (prefers-color-scheme: dark) {
 		border-top: 1px solid #323037;
@@ -137,6 +141,8 @@ body {
 }
 
 .sidebar {
+	position: relative;
+	min-height: 100vh;
 	.select2-container {
 		width: 100%;
 	}
@@ -211,7 +217,6 @@ body {
 }
 
 .canvas {
-	position: relative;
 	overflow: hidden;
 	background-image: url("../images/grid.svg");
 	background-color: #f8f8f8;
@@ -587,51 +592,22 @@ body {
 
 #canvas-scale-form {
 	//display: none;
-	@media (max-width: 1099px) {
-		.input-group-addon {
-			display: none;
-		}
-		input {
-			border-radius: $border-radius-base;
-		}
-		.btn-sm {
-			display: none;
-		}
+	.input-group-addon {
+		display: none;
 	}
-	@media (min-width: 1100px) {
-		position: fixed;
-		z-index: 2;
-		bottom: 0;
-		right: 0;
-		padding: 7px;
-		margin: 0;
-		border: 0;
-		display: flex;
-		background: rgba(white, 0.5);
-		border: 1px solid rgba(black, 0.12);
-		border-top-left-radius: 5px;
-		@media (prefers-color-scheme: dark) {
-			background: $panel-bg-dark;
-			border-color: rgba(white, 0.12);
-		}
-		input {
-			width: 85px;
-		}
-		h5 {
-			line-height: 20px;
-			margin: 3px 8px 0 0;
-		}
-		h4 {
-			display: none;
-		}
+	input {
+		border-radius: $border-radius-base;
 	}
+	.btn-sm {
+		display: none;
+	}
+
 }
 
 .sidebar {
 	&__scroll {
 		display: flex;
 		flex-direction: column;
-		height: 100%;
 	}
 }
 

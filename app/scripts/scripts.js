@@ -2,6 +2,8 @@ const { ipcRenderer, webFrame } = window.require('electron');
 
 var pedalImagePath = "public/images/pedals/";
 var pedalboardImagePath = "public/images/pedalboards/";
+var isPedalboardLocked = false;
+var draggable = null;
 
 $(document).ready(function () {
 	// Populate Pedalboards and Pedals lists
@@ -111,7 +113,7 @@ $(document).ready(function () {
 
 	$("body").on("click", "#clear-canvas-confirmation", function () {
 		$(".canvas").empty();
-		$("#pedalboard-saving .preset-name").val('') // IG
+		$("#pedalboard-saving .preset-name").val('') // new
 		$("#clear-canvas-modal").modal("hide");
 		savePedalCanvas();
 	});
@@ -280,7 +282,12 @@ $(document).ready(function () {
 		}
 	});
 
-	// IG
+
+
+
+
+
+	// new
 	$("body").on("click", "#save-pedalboard-btn", function (event) {
 		var presetName = $("#pedalboard-saving .preset-name").val();
 		savePresetToFile(presetName);
@@ -289,6 +296,30 @@ $(document).ready(function () {
 	$("body").on("click", "#load-pedalboard-btn", function (event) {
 		loadPresetFromFile();
 	})
+
+	$("body").on("click", "#lock-pedalboards-btn", function (event) {
+		isPedalboardLocked = !isPedalboardLocked;
+		var isEnabled = !isPedalboardLocked ? "enable" : "disable";
+		$draggable.filter( function( i, elem ) {
+			return elem.classList.contains("pedalboard");
+		}).draggabilly(isEnabled);
+		/*
+		if (event.target.classList.contains("pedalboard")) {
+			var isEnabled = (!isPedalboardLocked) ? "enable" : "disable";
+			$draggable.filter( function( i, elem ) {
+				return elem == event.target;
+			}).draggabilly(isEnabled);
+		}
+		*/
+		console.log($draggable)
+	})
+
+
+
+
+
+
+
 
 
 
@@ -438,21 +469,36 @@ $(document).ready(function () {
 }); // End Document ready
 
 function readyCanvas(pedal) {
-	var $draggable = $(".canvas .pedal, .canvas .pedalboard").draggabilly({
+	$draggable = $(".canvas .pedal, .canvas .pedalboard").draggabilly({
 		containment: ".canvas",
 	});
 
+	/*
 	$(".canvas .pedal, .canvas .pedalboard").draggabilly({
 		containment: ".canvas",
 	});
+	*/
 
-	$draggable.on("dragEnd", function (e) {
-		console.log("dragEnd");
-		ga("send", "event", "Canvas", "moved", "dragend");
-		savePedalCanvas();
+	$draggable.on("dragStart", (event, pointer) => {
+		/*
+		$draggable.filter( function( i, elem ) {
+			//console.log(elem);
+		}).draggabilly(isEnabled);
+		if (event.target.classList.contains("pedalboard")) {
+			var isEnabled = (!isPedalboardLocked) ? "enable" : "disable";
+			$draggable.filter( function( i, elem ) {
+				return elem == event.target;
+			}).draggabilly(isEnabled);
+		}
+		*/
 	});
 
-	// $draggable.on( 'staticClick', function(event) {
+	$draggable.on("dragEnd", function (e) {
+		ga("send", "event", "Canvas", "moved", "dragend");
+		savePedalCanvas();
+		
+	});
+
 
 	$draggable.on("staticClick", function (event) {
 		//rotatePedal(this);
@@ -481,7 +527,7 @@ function readyCanvas(pedal) {
 				$(this).addClass("rotate-90");
 			}
 			savePedalCanvas();
-		}
+		} 
 	});
 
 	savePedalCanvas();
@@ -494,7 +540,7 @@ function readyCanvas(pedal) {
 
 
 
-// IG
+// new
 function savePresetToFile(presetName) {
 	var preset = `${presetName}\n${JSON.stringify($(".canvas").html())}`;
 	ipcRenderer.send('save-preset', preset, presetName);

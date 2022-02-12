@@ -199,6 +199,46 @@
 							</div>
 						</div>
 
+						<div class="sidebar__section">
+							<h4>Pedalboard Actions</h4>
+							<button
+								id="lock-pedalboards-btn"
+								class="btn btn-primary btn-block"
+							>
+								Lock Pedalboards
+							</button>
+							<button
+								id="clear-canvas"
+								class="btn btn-primary btn-danger btn-block"
+								data-toggle="modal"
+								data-target="#clear-canvas-modal"
+							>
+								Clear
+							</button>
+						</div>
+
+						<!-- // new -->
+						<div class="sidebar__section">
+							<div id="pedalboard-saving">
+								<h4>Pedalboard Saving</h4>
+								<input
+									type="text"
+									class="preset-name form-control"
+									placeholder="Preset name"
+									value=""
+									required
+								/>
+								<p></p>
+								<button id="save-pedalboard-btn" class="btn btn-primary btn-block">
+									Save Pedalboard
+								</button>
+								<p></p>
+								<button id="load-pedalboard-btn" class="btn btn-primary btn-block">
+									Load Pedalboard
+								</button>
+							</div>					
+						</div>
+
 						<div id="canvas-scale-form" class="sidebar__section">
 							<h4>Canvas Scale</h4>
 								<div class="input-group-addon">Scale</div>
@@ -214,42 +254,8 @@
 								data-toggle="modal"
 								data-target="#canvas-scale-modal"
 							>
-
 							</a>
 						</div>
-
-						<div class="sidebar__section">
-							<button
-								id="clear-canvas"
-								class="btn btn-sm btn-danger btn-block"
-								data-toggle="modal"
-								data-target="#clear-canvas-modal"
-							>
-								Clear
-							</button>
-						</div>
-
-						<!-- // IG -->
-						<div class="sidebar__section">
-						<div id="pedalboard-saving">
-							<h4>Pedalboard Saving</h4>
-							<input
-								type="text"
-								class="preset-name form-control"
-								placeholder="Preset name"
-								value=""
-								required
-							/>
-							<p></p>
-							<button id="save-pedalboard-btn" class="btn btn-primary btn-block">
-								Save Pedalboard
-							</button>
-							<p></p>
-							<button id="load-pedalboard-btn" class="btn btn-primary btn-block">
-								Load Pedalboard
-							</button>
-						</div>
-				</div>
 					</div>
 					<!-- sidebar__scroll -->
 				</div>

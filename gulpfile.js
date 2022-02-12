@@ -6,7 +6,7 @@
 // ------------------------------------------------------------------------------------
 
 var gulp = require("gulp");
-var sass = require("gulp-sass");
+var sass = require("gulp-sass")(require('sass'));
 var watch = require("gulp-watch");
 var plumber = require("gulp-plumber");
 var minifycss = require("gulp-minify-css");

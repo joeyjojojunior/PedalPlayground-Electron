@@ -64,28 +64,29 @@ var reportError = function (error) {
 };
 
 // SCSS
-gulp.task("styles", function () {
+function styles() {
 	return gulp
-		.src("app/stylesheets/*.scss")
-		.pipe(
-			plumber({
-				errorHandler: reportError,
-			})
-		)
-		.pipe(sass())
-		.pipe(gulp.dest("public/stylesheets"))
-		.pipe(rename({ suffix: ".min" }))
-		.pipe(minifycss())
-		.pipe(gulp.dest("public/stylesheets"))
-		.pipe(gzip(gzip_options))
-		.pipe(gulp.dest("public/stylesheets"))
-		.pipe(notify("SCSS Compiled!"))
-		.on("error", reportError)
-		.pipe(livereload());
-});
+	.src("app/stylesheets/*.scss")
+	.pipe(
+		plumber({
+			errorHandler: reportError,
+		})
+	)
+	.pipe(sass())
+	.pipe(gulp.dest("public/stylesheets"))
+	.pipe(rename({ suffix: ".min" }))
+	.pipe(minifycss())
+	.pipe(gulp.dest("public/stylesheets"))
+	.pipe(gzip(gzip_options))
+	.pipe(gulp.dest("public/stylesheets"))
+	.pipe(notify("SCSS Compiled!"))
+	.on("error", reportError)
+	.pipe(livereload());
+};
+
 
 // JS
-gulp.task("scripts", function () {
+function scripts() {
 	return gulp
 		.src([
 			"bower_components/jquery/dist/jquery.js",
@@ -108,51 +109,60 @@ gulp.task("scripts", function () {
 		.pipe(notify("JS Compiled!"))
 		.on("error", reportError)
 		.pipe(livereload());
-});
+}
 
-gulp.task("process-images", function () {
+function processImages() {
 	return gulp
-		.src("app/images/pedals/*")
-		.pipe(cache("images"))
-		.pipe(
-			responsive({
-				"*.*": {
-					withoutEnlargement: false,
-					errorOnUnusedConfig: false,
-					width: "700",
-					height: "700",
-					max: true,
-				},
-			})
-		)
-		.pipe(imagemin())
-		.pipe(gulp.dest("public/images/pedals/"));
-});
+	.src("app/images/pedals/*")
+	.pipe(cache("images"))
+	.pipe(
+		responsive({
+			"*.*": {
+				withoutEnlargement: false,
+				errorOnUnusedConfig: false,
+				width: "700",
+				height: "700",
+				max: true,
+			},
+		})
+	)
+	.pipe(imagemin())
+	.pipe(gulp.dest("public/images/pedals/"));
+}
 
 /* Watch Files For Changes */
-gulp.task("watch", function () {
-	livereload.listen();
-	gulp.watch("app/stylesheets/**", ["styles"]);
-	gulp.watch("app/scripts/**", ["scripts"]);
-	gulp.watch("*.php").on("change", livereload.changed);
-	gulp.watch("includes/**").on("change", livereload.changed);
-	gulp.watch("*.html").on("change", livereload.changed);
-});
-
-gulp.task("watch-all", function () {
-	livereload.listen();
-	//gulp.watch(['app/images/pedals/*.png','!app/images/pedals/*_tmp*.*'], ['images']);
+const watchCSS = () => gulp.watch("app/stylesheets/**", gulp.series(styles));
+const watchScripts = () => gulp.watch("app/scripts/**", gulp.series(scripts));
+const watchPHP = () => gulp.watch("*.php").on("change", livereload.changed);
+const watchIncludes = () => gulp.watch("includes/**").on("change", livereload.changed);
+const watchHTML = (done) => { gulp.watch("*.html").on("change", livereload.changed); done(); };
+const watchImages = () => { 
+	gulp.watch(['app/images/pedals/*.png','!app/images/pedals/*_tmp*.*'], ['images']);
 	gulp.watch(
 		["app/images/pedals-new/**/*.png", "!app/images/pedals-new/**/*_tmp*.*"],
 		["process-images"]
 	);
-	gulp.watch("app/stylesheets/**", ["styles"]);
-	gulp.watch("app/scripts/**", ["scripts"]);
-	gulp.watch("*.php").on("change", livereload.changed);
-	gulp.watch("includes/**").on("change", livereload.changed);
-	gulp.watch("*.html").on("change", livereload.changed);
-});
+};
 
-gulp.task("default", ["styles", "scripts", "watch"]);
+const liveReloadListen = () => livereload.listen();
 
-gulp.task("all", ["styles", "scripts", "process-images", "watch-all"]);
+const dev = gulp.series(
+	gulp.parallel(styles, scripts),
+    gulp.parallel(watchCSS, watchScripts, watchPHP, watchIncludes, watchHTML)
+);
+exports.default = dev;
+
+const all = gulp.series(
+	gulp.parallel(styles, scripts),
+	gulp.parallel(processImages),
+	gulp.parallel(liveReloadListen),
+	gulp.parallel(watchImages, watchCSS, watchScripts, watchPHP, watchIncludes, watchHTML)
+)
+
+gulp.task('default', dev);
+
+
+
+//gulp.task("default", ["styles", "scripts", "watch"]);
+
+//gulp.task("all", ["styles", "scripts", "process-images", "watch-all"]);

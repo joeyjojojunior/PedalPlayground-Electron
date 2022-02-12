@@ -160,6 +160,7 @@ const all = gulp.series(
 )
 
 gulp.task('default', dev);
+gulp.task('all', all);
 
 
 

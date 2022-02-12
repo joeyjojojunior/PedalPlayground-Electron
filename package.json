@@ -7,8 +7,6 @@
 		"bootstrap": "^5.1.3",
 		"bootstrap-sass": "^3.4.1",
 		"bower": "^1.8.8",
-		"electron": "^17.0.0",
-		"electron-reload": "^2.0.0-alpha.1",
 		"ev-emitter": "^2.1.2",
 		"get-size": "^3.0.0",
 		"gulp": "^4.0.2",
@@ -31,6 +29,8 @@
 		"unipointer": "^2.4.0"
 	},
 	"devDependencies": {
+		"electron": "^17.0.0",
+		"electron-reload": "^2.0.0-alpha.1",
 		"electron-packager": "^15.4.0",
 		"http-server": "^0.11.1",
 		"prettier": "2.2.1",
@@ -43,8 +43,9 @@
 	},
 	"scripts": {
 		"start": "electron .",
-		"package": "npx electron-packager .",
+		"package": "npx electron-packager --overwrite .",
 		"build": "gulp default",
+		"build-all": "gulp all",
 		"serve": "http-server ./index.html -o",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},

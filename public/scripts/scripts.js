@@ -21393,14 +21393,89 @@ var redoStack = [];
 var pedalUnits = "metric";
 var pedalboardUnits = "metric";
 
-function mmToInch(mm) {
-	return parseInt(mm, 10)/25.4;
-}
-
 $(document).ready(function () {
 	// Populate Pedalboards and Pedals lists
 	GetPedalData();
-	GetPedalBoardData();
+	GetPedalBoardData();	
+
+	// new
+	$("body").on("click", "#save-pedalboard-btn", function (event) {
+		var presetName = $("#pedalboard-saving .preset-name").val();
+		savePresetToFile(presetName);
+	})
+
+	$("body").on("click", "#load-pedalboard-btn", function (event) {
+		loadPresetFromFile();
+
+	})
+
+	$("body").on("click", "#lock-pedalboards-btn", function (event) {
+		isPedalboardLocked = !isPedalboardLocked;
+		setPedalboardsLockStatus();
+	})
+
+	// Unset btn focus after click
+	$(".btn").mouseup(function(){
+		$(this).blur();
+	})
+
+	// Ctrl+Z Undo
+	$("body").on("keydown", function (event) {
+		if (event.originalEvent.ctrlKey && event.originalEvent.key === "z") {
+ 			undo();
+		}
+	});
+
+
+	// Ctrl+R Redo
+	$("body").on("keydown", function (event) {
+		if (event.originalEvent.ctrlKey && event.originalEvent.key === "y") {
+			redo();
+		}
+	});
+
+	$('input[type=radio][name=pedalboard-radio-units]').on('change', function(e) {
+		pedalboardUnits = this.value;
+		localStorage["pedalboardUnits"] = pedalboardUnits;
+
+		if (this.value === "metric") {
+			$("#pedalboard-custom-width").html("Width <em>(mm)</em>")
+			$("#pedalboard-custom-height").html("Height <em>(mm)</em>")
+		} else {
+			$("#pedalboard-custom-width").html("Width <em>(inches)</em>")
+			$("#pedalboard-custom-height").html("Height <em>(inches)</em>")
+		}
+	});
+
+	
+	$('input[type=radio][name=pedal-radio-units]').on('change', function(e) {
+		pedalUnits = this.value;
+		localStorage["pedalUnits"] = pedalUnits;
+		if (this.value === "metric") {
+			$("#pedal-custom-width").html("Width <em>(mm)</em>")
+			$("#pedal-custom-height").html("Height <em>(mm)</em>")
+		} else {
+			$("#pedal-custom-width").html("Width <em>(inches)</em>")
+			$("#pedal-custom-height").html("Height <em>(inches)</em>")
+		}
+	});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	// Make lists searchable
 	$(".pedal-list").select2({
@@ -21444,6 +21519,28 @@ $(document).ready(function () {
 		// Set canvas scale input and bg size to match scale
 		$("#canvas-scale").val(multiplier);
 		$(".canvas").css("background-size", multiplier + "px");
+
+		console.log(localStorage["pedalboardUnits"]);
+		// Restore desired units
+		if (localStorage["pedalboardUnits"] === "metric") {
+			$("#pedalboard-radio-metric").attr('checked', true);
+			$("#pedalboard-custom-width").html("Width <em>(mm)</em>")
+			$("#pedalboard-custom-height").html("Height <em>(mm)</em>")
+		} else {
+			$("#pedalboard-radio-imperial").attr('checked', true);
+			$("#pedalboard-custom-width").html("Width <em>(inches)</em>")
+			$("#pedalboard-custom-height").html("Height <em>(inches)</em>")
+		}
+	
+		if (localStorage["pedalUnits"] === "metric") {
+			$("#pedal-radio-metric").attr('checked', true);
+			$("#pedal-custom-width").html("Width <em>(mm)</em>")
+			$("#pedal-custom-height").html("Height <em>(mm)</em>")
+		} else {
+			$("#pedal-radio-imperial").attr('checked', true);
+			$("#pedal-custom-width").html("Width <em>(inches)</em>")
+			$("#pedal-custom-height").html("Height <em>(inches)</em>")
+		}
 	});
 
 	// When user changes scale, update stuffs
@@ -21677,92 +21774,6 @@ $(document).ready(function () {
 		}
 	});
 
-
-
-
-
-
-
-
-
-
-
-
-	// new
-	$("body").on("click", "#save-pedalboard-btn", function (event) {
-		var presetName = $("#pedalboard-saving .preset-name").val();
-		savePresetToFile(presetName);
-	})
-
-	$("body").on("click", "#load-pedalboard-btn", function (event) {
-		loadPresetFromFile();
-
-	})
-
-	$("body").on("click", "#lock-pedalboards-btn", function (event) {
-		isPedalboardLocked = !isPedalboardLocked;
-		setPedalboardsLockStatus();
-	})
-
-	// Unset btn focus after click
-	$(".btn").mouseup(function(){
-		$(this).blur();
-	})
-
-	// Ctrl+Z Undo
-	$("body").on("keydown", function (event) {
-		if (event.originalEvent.ctrlKey && event.originalEvent.key === "z") {
- 			undo();
-		}
-	});
-
-
-	// Ctrl+R Redo
-	$("body").on("keydown", function (event) {
-		if (event.originalEvent.ctrlKey && event.originalEvent.key === "y") {
-			redo();
-		}
-	});
-
-
-	$('input[type=radio][name=pedalboard-radio-units]').on('change', function(e) {
-		pedalboardUnits = this.value;
-		if (this.value === "metric") {
-			$("#pedalboard-custom-width").html("Width <em>(mm)</em>")
-			$("#pedalboard-custom-height").html("Height <em>(mm)</em>")
-		} else {
-			$("#pedalboard-custom-width").html("Width <em>(inches)</em>")
-			$("#pedalboard-custom-height").html("Height <em>(inches)</em>")
-		}
-	});
-
-	
-	$('input[type=radio][name=pedal-radio-units]').on('change', function(e) {
-		pedalUnits = this.value;
-		if (this.value === "metric") {
-			$("#pedal-custom-width").html("Width <em>(mm)</em>")
-			$("#pedal-custom-height").html("Height <em>(mm)</em>")
-		} else {
-			$("#pedal-custom-width").html("Width <em>(inches)</em>")
-			$("#pedal-custom-height").html("Height <em>(inches)</em>")
-		}
-	});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	// Add custom pedalboard
 	$("body").on("click", "#add-custom-pedalboard .btn", function (event) {
 		var serial = GenRandom.Job();
@@ -21907,73 +21918,7 @@ $(document).ready(function () {
 	});
 }); // End Document ready
 
-function setPedalboardsLockStatus() {
-	let lockBtn = $("#lock-pedalboards-btn")[0];
-	if (isPedalboardLocked) {
-		lockBtn.innerHTML = "Unlock Pedalboards"
-		lockBtn.classList.remove("btn-primary");
-		lockBtn.classList.add("btn-danger");
-	} else {
-		lockBtn.innerHTML = "Lock Pedalboards"
-		lockBtn.classList.add("btn-primary");
-		lockBtn.classList.remove("btn-danger");
-	}
 
-	var isEnabled = !isPedalboardLocked ? "enable" : "disable";
-	this.$draggable.filter( function( i, elem ) {
-		return elem.classList.contains("pedalboard");
-	}).draggabilly(isEnabled);
-}
-
-function readyCanvas(pedal) {
-	$draggable = $(".canvas .pedal, .canvas .pedalboard").draggabilly({
-		containment: ".canvas",
-	});
-
-	/*
-	$(".canvas .pedal, .canvas .pedalboard").draggabilly({
-		containment: ".canvas",
-	});
-	*/
-
-	$draggable.on("dragEnd", function (e) {
-		ga("send", "event", "Canvas", "moved", "dragend");
-		pushToUndoStack();
-		savePedalCanvas();
-	});
-
-	$draggable.on("staticClick", function (event) {
-		//rotatePedal(this);
-		var target = $(event.target);
-		if (target.is(".delete")) {
-			deletePedal(this);
-			deselect();
-			$("body").click();
-		} else if (target.is(".rotate")) {
-			event.stopPropagation();
-
-			//mvital: in some cases click event is sent multiple times to the handler - no idea why
-			//mvital: seems calling stopImmediatePropagation() helps
-			event.stopImmediatePropagation();
-
-			//rotatePedal(this);
-			if ($(this).hasClass("rotate-90")) {
-				$(this).removeClass("rotate-90");
-				$(this).addClass("rotate-180");
-			} else if ($(this).hasClass("rotate-180")) {
-				$(this).removeClass("rotate-180");
-				$(this).addClass("rotate-270");
-			} else if ($(this).hasClass("rotate-270")) {
-				$(this).removeClass("rotate-270");
-			} else {
-				$(this).addClass("rotate-90");
-			}
-			savePedalCanvas();
-		} 
-	});
-
-	savePedalCanvas();
-}
 
 
 
@@ -22044,6 +21989,45 @@ function redo() {
 	}
 }
 
+function setPedalboardsLockStatus() {
+	let lockBtn = $("#lock-pedalboards-btn")[0];
+	if (isPedalboardLocked) {
+		lockBtn.innerHTML = "Unlock Pedalboards"
+		lockBtn.classList.remove("btn-primary");
+		lockBtn.classList.add("btn-danger");
+	} else {
+		lockBtn.innerHTML = "Lock Pedalboards"
+		lockBtn.classList.add("btn-primary");
+		lockBtn.classList.remove("btn-danger");
+	}
+
+	var isEnabled = !isPedalboardLocked ? "enable" : "disable";
+	this.$draggable.filter( function( i, elem ) {
+		return elem.classList.contains("pedalboard");
+	}).draggabilly(isEnabled);
+}
+
+function mmToInch(mm) {
+	return parseInt(mm, 10)/25.4;
+}
+
+function restoreUnits() {
+	if (localStorage["pedalboardUnits"] === "metric") {
+		$("#pedalboard-custom-width").html("Width <em>(mm)</em>")
+		$("#pedalboard-custom-height").html("Height <em>(mm)</em>")
+	} else {
+		$("#pedalboard-custom-width").html("Width <em>(inches)</em>")
+		$("#pedalboard-custom-height").html("Height <em>(inches)</em>")
+	}
+
+	if (localStorage["pedalUnits"] === "metric") {
+		$("#pedal-custom-width").html("Width <em>(mm)</em>")
+		$("#pedal-custom-height").html("Height <em>(mm)</em>")
+	} else {
+		$("#pedal-custom-width").html("Width <em>(inches)</em>")
+		$("#pedal-custom-height").html("Height <em>(inches)</em>")
+	}
+}
 
 
 
@@ -22052,6 +22036,63 @@ function redo() {
 
 
 
+
+
+
+
+
+
+
+
+function readyCanvas(pedal) {
+	$draggable = $(".canvas .pedal, .canvas .pedalboard").draggabilly({
+		containment: ".canvas",
+	});
+
+	/*
+	$(".canvas .pedal, .canvas .pedalboard").draggabilly({
+		containment: ".canvas",
+	});
+	*/
+
+	$draggable.on("dragEnd", function (e) {
+		ga("send", "event", "Canvas", "moved", "dragend");
+		pushToUndoStack();
+		savePedalCanvas();
+	});
+
+	$draggable.on("staticClick", function (event) {
+		//rotatePedal(this);
+		var target = $(event.target);
+		if (target.is(".delete")) {
+			deletePedal(this);
+			deselect();
+			$("body").click();
+		} else if (target.is(".rotate")) {
+			event.stopPropagation();
+
+			//mvital: in some cases click event is sent multiple times to the handler - no idea why
+			//mvital: seems calling stopImmediatePropagation() helps
+			event.stopImmediatePropagation();
+
+			//rotatePedal(this);
+			if ($(this).hasClass("rotate-90")) {
+				$(this).removeClass("rotate-90");
+				$(this).addClass("rotate-180");
+			} else if ($(this).hasClass("rotate-180")) {
+				$(this).removeClass("rotate-180");
+				$(this).addClass("rotate-270");
+			} else if ($(this).hasClass("rotate-270")) {
+				$(this).removeClass("rotate-270");
+			} else {
+				$(this).addClass("rotate-90");
+			}
+			savePedalCanvas();
+		} 
+	});
+
+	savePedalCanvas();
+}
 
 function savePedalCanvas() {
 	//console.log("Canvas Saved!");

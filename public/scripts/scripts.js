@@ -21411,6 +21411,7 @@ $(document).ready(function () {
 
 	$("body").on("click", "#lock-pedalboards-btn", function (event) {
 		isPedalboardLocked = !isPedalboardLocked;
+		localStorage["isPedalboardLocked"] = isPedalboardLocked;
 		setPedalboardsLockStatus();
 	})
 
@@ -21521,28 +21522,38 @@ $(document).ready(function () {
 		$(".canvas").css("background-size", multiplier + "px");
 		
 		// Restore desired units
-		pedalboardUnits = localStorage["pedalboardUnits"];
-		if (pedalboardUnits === "metric") {
-			$("#pedalboard-radio-metric").attr('checked', true);
-			$("#pedalboard-custom-width").html("Width <em>(mm)</em>")
-			$("#pedalboard-custom-height").html("Height <em>(mm)</em>")
-		} else {
-			$("#pedalboard-radio-imperial").attr('checked', true);
-			$("#pedalboard-custom-width").html("Width <em>(inches)</em>")
-			$("#pedalboard-custom-height").html("Height <em>(inches)</em>")
+		if (localStorage["pedalboardUnits"] !== null) {
+			pedalboardUnits = localStorage["pedalboardUnits"];
+			if (pedalboardUnits === "metric") {
+				$("#pedalboard-radio-metric").attr('checked', true);
+				$("#pedalboard-custom-width").html("Width <em>(mm)</em>")
+				$("#pedalboard-custom-height").html("Height <em>(mm)</em>")
+			} else {
+				$("#pedalboard-radio-imperial").attr('checked', true);
+				$("#pedalboard-custom-width").html("Width <em>(inches)</em>")
+				$("#pedalboard-custom-height").html("Height <em>(inches)</em>")
+			}
 		}
 		
-		pedalUnits = localStorage["pedalUnits"];
-		if (pedalUnits === "metric") {
-			$("#pedal-radio-metric").attr('checked', true);
-			$("#pedal-custom-width").html("Width <em>(mm)</em>")
-			$("#pedal-custom-height").html("Height <em>(mm)</em>")
-		} else {
-			$("#pedal-radio-imperial").attr('checked', true);
-			$("#pedal-custom-width").html("Width <em>(inches)</em>")
-			$("#pedal-custom-height").html("Height <em>(inches)</em>")
+		if (localStorage["pedalUnits"] !== null) {
+			pedalUnits = localStorage["pedalUnits"];
+			if (pedalUnits === "metric") {
+				$("#pedal-radio-metric").attr('checked', true);
+				$("#pedal-custom-width").html("Width <em>(mm)</em>")
+				$("#pedal-custom-height").html("Height <em>(mm)</em>")
+			} else {
+				$("#pedal-radio-imperial").attr('checked', true);
+				$("#pedal-custom-width").html("Width <em>(inches)</em>")
+				$("#pedal-custom-height").html("Height <em>(inches)</em>")
+			}	
 		}
 
+		if (localStorage["isPedalboardLocked"] !== null) {
+			var isTrueSet = (localStorage["isPedalboardLocked"] === 'true');
+			isPedalboardLocked = isTrueSet;
+			console.log(isPedalboardLocked);
+			setPedalboardsLockStatus();
+		}	
 		pushToUndoStack();
 	});
 
@@ -21995,12 +22006,15 @@ function redo() {
 }
 
 function setPedalboardsLockStatus() {
+	console.log("isFunc: " + isPedalboardLocked);
 	let lockBtn = $("#lock-pedalboards-btn")[0];
 	if (isPedalboardLocked) {
+		console.log("locked");
 		lockBtn.innerHTML = "Unlock Pedalboards"
 		lockBtn.classList.remove("btn-primary");
 		lockBtn.classList.add("btn-danger");
 	} else {
+		console.log("unlocked");
 		lockBtn.innerHTML = "Lock Pedalboards"
 		lockBtn.classList.add("btn-primary");
 		lockBtn.classList.remove("btn-danger");
@@ -22015,27 +22029,6 @@ function setPedalboardsLockStatus() {
 function mmToInch(mm) {
 	return parseInt(mm, 10)/25.4;
 }
-
-function restoreUnits() {
-	if (localStorage["pedalboardUnits"] === "metric") {
-		$("#pedalboard-custom-width").html("Width <em>(mm)</em>")
-		$("#pedalboard-custom-height").html("Height <em>(mm)</em>")
-	} else {
-		$("#pedalboard-custom-width").html("Width <em>(inches)</em>")
-		$("#pedalboard-custom-height").html("Height <em>(inches)</em>")
-	}
-
-	if (localStorage["pedalUnits"] === "metric") {
-		$("#pedal-custom-width").html("Width <em>(mm)</em>")
-		$("#pedal-custom-height").html("Height <em>(mm)</em>")
-	} else {
-		$("#pedal-custom-width").html("Width <em>(inches)</em>")
-		$("#pedal-custom-height").html("Height <em>(inches)</em>")
-	}
-}
-
-
-
 
 
 

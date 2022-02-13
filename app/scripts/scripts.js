@@ -4,6 +4,8 @@ var pedalImagePath = "public/images/pedals/";
 var pedalboardImagePath = "public/images/pedalboards/";
 var isPedalboardLocked = false;
 var draggable = null;
+var undoStack = [];
+var redoStack = [];
 
 $(document).ready(function () {
 	// Populate Pedalboards and Pedals lists
@@ -289,6 +291,12 @@ $(document).ready(function () {
 
 
 
+
+
+
+
+
+
 	// new
 	$("body").on("click", "#save-pedalboard-btn", function (event) {
 		var presetName = $("#pedalboard-saving .preset-name").val();
@@ -309,6 +317,26 @@ $(document).ready(function () {
 	$(".btn").mouseup(function(){
 		$(this).blur();
 	})
+
+	// Ctrl+Z Undo
+	$("body").on("keydown", function (event) {
+		if (event.originalEvent.ctrlKey && event.originalEvent.key === "z") {
+ 			undo();
+		}
+	});
+
+
+	// Ctrl+R Redo
+	$("body").on("keydown", function (event) {
+		if (event.originalEvent.ctrlKey && event.originalEvent.key === "y") {
+			redo();
+		}
+	});
+
+
+
+
+
 
 
 
@@ -465,22 +493,18 @@ $(document).ready(function () {
 
 function setPedalboardsLockStatus() {
 	let lockBtn = $("#lock-pedalboards-btn")[0];
-	console.log("isPedalboardUnlocked: " + isPedalboardLocked);
 	if (isPedalboardLocked) {
-		console.log("setlock")
 		lockBtn.innerHTML = "Unlock Pedalboards"
 		lockBtn.classList.remove("btn-primary");
 		lockBtn.classList.add("btn-danger");
 	} else {
-		console.log("setunlock")
-
 		lockBtn.innerHTML = "Lock Pedalboards"
 		lockBtn.classList.add("btn-primary");
 		lockBtn.classList.remove("btn-danger");
 	}
 
 	var isEnabled = !isPedalboardLocked ? "enable" : "disable";
-	$draggable.filter( function( i, elem ) {
+	this.$draggable.filter( function( i, elem ) {
 		return elem.classList.contains("pedalboard");
 	}).draggabilly(isEnabled);
 }
@@ -496,11 +520,10 @@ function readyCanvas(pedal) {
 	});
 	*/
 
-
 	$draggable.on("dragEnd", function (e) {
 		ga("send", "event", "Canvas", "moved", "dragend");
+		pushToUndoStack();
 		savePedalCanvas();
-		
 	});
 
 	$draggable.on("staticClick", function (event) {
@@ -569,9 +592,43 @@ ipcRenderer.on('load-preset-loaded', (event, preset) => {
 	isPedalboardLocked = presetJSON.isPedalboardLocked;
 	$("#canvas-scale").val(presetJSON.canvasScale);
 	$(".canvas").html(JSON.parse(presetJSON.canvas));
+	this.undoStack = [];
+	pushToUndoStack();
 	readyCanvas();
+	savePedalCanvas();
 	setPedalboardsLockStatus();
 });
+
+
+function undo() {
+	if (undoStack.length > 1) {
+		console.log("undo");
+		//console.log(undoStack);
+		this.redoStack.push(this.undoStack.pop());
+		$(".canvas").html(JSON.parse(this.undoStack[this.undoStack.length-1]));
+		readyCanvas();
+		savePedalCanvas();
+	}
+}
+
+function pushToUndoStack() {
+	console.log("push");
+	this.undoStack.push(JSON.stringify($(".canvas").html()));
+}
+
+
+
+function redo() {
+	if (redoStack.length > 1) {
+		var redoState = this.redoStack.pop();
+		this.undoStack.push(redoState);
+		$(".canvas").html(JSON.parse(redoState));
+		readyCanvas();
+		savePedalCanvas();
+	}
+}
+
+
 
 
 
@@ -581,7 +638,7 @@ ipcRenderer.on('load-preset-loaded', (event, preset) => {
 
 
 function savePedalCanvas() {
-	console.log("Canvas Saved!");
+	//console.log("Canvas Saved!");
 	localStorage["pedalCanvas"] = JSON.stringify($(".canvas").html());
 }
 
@@ -604,6 +661,7 @@ function rotatePedal(pedal) {
 function deletePedal(pedal) {
 	$(pedal).remove();
 	deselect();
+	pushToUndoStack();
 	savePedalCanvas();
 }
 
@@ -616,6 +674,7 @@ function deselect() {
 function deleteSelected() {
 	$(".canvas .selected").remove();
 	$(".canvas .panel").remove();
+	pushToUndoStack();
 	savePedalCanvas();
 }
 

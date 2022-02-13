@@ -9,6 +9,7 @@ const path = require('path');
 const fs = require('fs');
 
 
+
 // Enable live reload for Electron too
 require('electron-reload')(__dirname, 
   {
@@ -49,16 +50,15 @@ const createWindow = () => {
         } else {
             console.log('Success');
         }
-      });
-
-      const fileName = (presetName.length > 0) ? presetName.replaceAll(' ', '_') : "unnamed_preset";
-      fs.writeFile(`./presets/${fileName}.json`, preset, function (err) {
+        const fileName = (presetName.length > 0) ? presetName.replaceAll(' ', '_') : "unnamed_preset";
+        fs.writeFile(`./presets/${fileName}.json`, preset, function (err) {
         if (err) {
             console.error(err)
             return
         }
         event.reply('save-preset-saved', "Canvas Saved to file!");
-      });    
+      }); 
+      });   
     });
   });
 

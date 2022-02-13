@@ -108,22 +108,33 @@
 								<div role="tabpanel" class="tab-pane active" id="custom-pedalboard">
 									<form id="add-custom-pedalboard">
 										<div class="form-element left">
-											<label for="">Width <em>(inches)</em></label>
+											<input type="radio" name="pedalboard-radio-units" value="metric" id="radio-metric" checked="true">
+											<label for="radio-metric">Metric</label>
+										</div>
+										<div class="form-element right">
+											<input type="radio" name="pedalboard-radio-units" value="imperial" id="radio-imperial">
+											<label for="radio-imperial">Imperial</label>
+										</div>
+
+										<div class="form-element left">
+											<label id="pedalboard-custom-width" for="">Width <em>(mm)</em></label>
 											<input
 												type="number"
 												class="custom-width form-control"
 												placeholder="2.75"
+												name=""
 												value=""
 												required
 											/>
 										</div>
 
 										<div class="form-element left">
-											<label for="">Height <em>(inches)</em></label>
+											<label id="pedalboard-custom-height" for="">Height <em>(mm)</em></label>
 											<input
 												type="number"
 												class="custom-height form-control"
 												placeholder="4.25"
+												name=""
 												value=""
 												required
 											/>
@@ -152,7 +163,16 @@
 										</div>
 										
 										<div class="form-element left">
-											<label for="">Width <em>(inches)</em></label>
+											<input type="radio" name="pedal-radio-units" value="metric" id="radio-metric" checked="true">
+											<label for="radio-metric">Metric</label>
+										</div>
+										<div class="form-element right">
+											<input type="radio" name="pedal-radio-units" value="imperial" id="radio-imperial">
+											<label for="radio-imperial">Imperial</label>
+										</div>
+
+										<div  class="form-element left">
+											<label id="pedal-custom-width" for="">Width <em>(mm)</em></label>
 											<input
 												type="number"
 												class="custom-width form-control"
@@ -163,7 +183,7 @@
 										</div>
 
 										<div class="form-element left">
-											<label for="">Height <em>(inches)</em></label>
+											<label id="pedal-custom-height" for="">Height <em>(mm)</em></label>
 											<input
 												type="number"
 												class="custom-height form-control"

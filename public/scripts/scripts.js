@@ -21390,6 +21390,12 @@ var isPedalboardLocked = false;
 var draggable = null;
 var undoStack = [];
 var redoStack = [];
+var pedalUnits = "metric";
+var pedalboardUnits = "metric";
+
+function mmToInch(mm) {
+	return parseInt(mm, 10)/25.4;
+}
 
 $(document).ready(function () {
 	// Populate Pedalboards and Pedals lists
@@ -21514,8 +21520,8 @@ $(document).ready(function () {
 		var shortname = $(selected).attr("id");
 		var width = $(selected).data("width");
 		var height = $(selected).data("height");
-		var scaledWidth = $(selected).data("width") * multiplier;
-		var scaledHeight = $(selected).data("height") * multiplier;
+		var scaledWidth = width * multiplier;
+		var scaledHeight = height * multiplier;
 		var i = $(selected).data("image");
 		var pedal =
 			'\
@@ -21607,8 +21613,9 @@ $(document).ready(function () {
 	$("body").on("click", "#add-custom-pedal .btn", function (event) {
 		var serial = GenRandom.Job();
 		var multiplier = $("#canvas-scale").val();
-		var width = $("#add-custom-pedal .custom-width").val();
-		var height = $("#add-custom-pedal .custom-height").val();
+		console.log(pedalUnits)
+		var width = (pedalUnits == "metric") ? mmToInch($("#add-custom-pedal .custom-width").val()) : $("#add-custom-pedal .custom-width").val();
+		var height = (pedalUnits == "metric") ? mmToInch($("#add-custom-pedal .custom-height").val()) : $("#add-custom-pedal .custom-height").val();
 		var scaledWidth = width * multiplier;
 		var scaledHeight = height * multiplier;
 		var dims = width + '" x ' + height + '"';
@@ -21718,6 +21725,31 @@ $(document).ready(function () {
 	});
 
 
+	$('input[type=radio][name=pedalboard-radio-units]').on('change', function(e) {
+		pedalboardUnits = this.value;
+		if (this.value === "metric") {
+			$("#pedalboard-custom-width").html("Width <em>(mm)</em>")
+			$("#pedalboard-custom-height").html("Height <em>(mm)</em>")
+		} else {
+			$("#pedalboard-custom-width").html("Width <em>(inches)</em>")
+			$("#pedalboard-custom-height").html("Height <em>(inches)</em>")
+		}
+	});
+
+	
+	$('input[type=radio][name=pedal-radio-units]').on('change', function(e) {
+		pedalUnits = this.value;
+		if (this.value === "metric") {
+			$("#pedal-custom-width").html("Width <em>(mm)</em>")
+			$("#pedal-custom-height").html("Height <em>(mm)</em>")
+		} else {
+			$("#pedal-custom-width").html("Width <em>(inches)</em>")
+			$("#pedal-custom-height").html("Height <em>(inches)</em>")
+		}
+	});
+
+
+
 
 
 
@@ -21735,8 +21767,8 @@ $(document).ready(function () {
 	$("body").on("click", "#add-custom-pedalboard .btn", function (event) {
 		var serial = GenRandom.Job();
 		var multiplier = $("#canvas-scale").val();
-		var width = $("#add-custom-pedalboard .custom-width").val();
-		var height = $("#add-custom-pedalboard .custom-height").val();
+		var width = (pedalboardUnits == "metric") ? mmToInch($("#add-custom-pedalboard .custom-width").val()) : $("#add-custom-pedalboard .custom-width").val();
+		var height = (pedalboardUnits == "metric") ? mmToInch($("#add-custom-pedalboard .custom-height").val()) : $("#add-custom-pedalboard .custom-height").val();
 		var scaledWidth = width * multiplier;
 		var scaledHeight = height * multiplier;
 

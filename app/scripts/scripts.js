@@ -135,10 +135,10 @@ $(document).ready(function () {
 		// Set canvas scale input and bg size to match scale
 		$("#canvas-scale").val(multiplier);
 		$(".canvas").css("background-size", multiplier + "px");
-
-		console.log(localStorage["pedalboardUnits"]);
+		
 		// Restore desired units
-		if (localStorage["pedalboardUnits"] === "metric") {
+		pedalboardUnits = localStorage["pedalboardUnits"];
+		if (pedalboardUnits === "metric") {
 			$("#pedalboard-radio-metric").attr('checked', true);
 			$("#pedalboard-custom-width").html("Width <em>(mm)</em>")
 			$("#pedalboard-custom-height").html("Height <em>(mm)</em>")
@@ -147,8 +147,9 @@ $(document).ready(function () {
 			$("#pedalboard-custom-width").html("Width <em>(inches)</em>")
 			$("#pedalboard-custom-height").html("Height <em>(inches)</em>")
 		}
-	
-		if (localStorage["pedalUnits"] === "metric") {
+		
+		pedalUnits = localStorage["pedalUnits"];
+		if (pedalUnits === "metric") {
 			$("#pedal-radio-metric").attr('checked', true);
 			$("#pedal-custom-width").html("Width <em>(mm)</em>")
 			$("#pedal-custom-height").html("Height <em>(mm)</em>")
@@ -157,6 +158,8 @@ $(document).ready(function () {
 			$("#pedal-custom-width").html("Width <em>(inches)</em>")
 			$("#pedal-custom-height").html("Height <em>(inches)</em>")
 		}
+
+		pushToUndoStack();
 	});
 
 	// When user changes scale, update stuffs
@@ -226,6 +229,7 @@ $(document).ready(function () {
 	});
 
 	$("body").on("click", "#add-pedal button", function (event) {
+		console.log("apb")
 		var multiplier = $("#canvas-scale").val();
 		var serial = GenRandom.Job();
 		var selected = $("#add-pedal").find(":selected");
@@ -267,6 +271,7 @@ $(document).ready(function () {
 </div>';
 		$(".canvas").append(pedal);
 		readyCanvas();
+		pushToUndoStack();
 		ga("send", "event", "Pedal", "added", name);
 		event.preventDefault();
 	});
@@ -312,6 +317,7 @@ $(document).ready(function () {
 </div>';
 
 		$(".canvas").prepend(pedal);
+		pushToUndoStack();
 		readyCanvas();
 		ga("send", "event", "Pedalboard", "added", name);
 		event.preventDefault();
@@ -383,6 +389,7 @@ $(document).ready(function () {
 		} else {
 			console.log("add custom pedal...");
 			$(".canvas").append(pedal);
+			pushToUndoStack();
 			readyCanvas();
 			// console.log(dims);
 			ga("send", "event", "CustomPedal", "added", dims + " " + name);
@@ -436,6 +443,7 @@ $(document).ready(function () {
 			</div>';
 
 			$(".canvas").prepend(pedalboard);
+			pushToUndoStack();
 			readyCanvas();
 			ga("send", "event", "CustomPedalboard", "added", dims + " " + name);
 			event.preventDefault();
@@ -579,8 +587,6 @@ ipcRenderer.on('load-preset-loaded', (event, preset) => {
 
 function undo() {
 	if (undoStack.length > 1) {
-		console.log("undo");
-		//console.log(undoStack);
 		this.redoStack.push(this.undoStack.pop());
 		$(".canvas").html(JSON.parse(this.undoStack[this.undoStack.length-1]));
 		readyCanvas();
@@ -589,7 +595,6 @@ function undo() {
 }
 
 function pushToUndoStack() {
-	console.log("push");
 	this.undoStack.push(JSON.stringify($(".canvas").html()));
 }
 
@@ -673,6 +678,7 @@ function readyCanvas(pedal) {
 
 	$draggable.on("dragEnd", function (e) {
 		ga("send", "event", "Canvas", "moved", "dragend");
+		console.log("dragend")
 		pushToUndoStack();
 		savePedalCanvas();
 	});
@@ -703,6 +709,7 @@ function readyCanvas(pedal) {
 			} else {
 				$(this).addClass("rotate-90");
 			}
+			pushToUndoStack();
 			savePedalCanvas();
 		} 
 	});
@@ -715,6 +722,7 @@ function savePedalCanvas() {
 	localStorage["pedalCanvas"] = JSON.stringify($(".canvas").html());
 }
 
+/*
 function rotatePedal(pedal) {
 	ga("send", "event", "Pedal", "clicked", "rotate");
 	if ($(pedal).hasClass("rotate-90")) {
@@ -730,8 +738,10 @@ function rotatePedal(pedal) {
 	}
 	savePedalCanvas();
 }
+*/
 
 function deletePedal(pedal) {
+	console.log("delete pedal")
 	$(pedal).remove();
 	deselect();
 	pushToUndoStack();
@@ -745,10 +755,12 @@ function deselect() {
 }
 
 function deleteSelected() {
+	pushToUndoStack();
+
 	$(".canvas .selected").remove();
 	$(".canvas .panel").remove();
-	pushToUndoStack();
 	savePedalCanvas();
+
 }
 
 // function rotatePedal() {

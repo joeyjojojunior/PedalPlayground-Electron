@@ -163,7 +163,7 @@ body {
 .sidebar-close {
 	user-select: none;
 	display: none;
-	@media (max-width: 1023px) {
+	@media (max-width: 1024px), (max-height: 950px) {
 		display: block;
 		position: absolute;
 		left: 0;
@@ -189,7 +189,7 @@ body {
 .sidebar-open {
 	user-select: none;
 	display: none;
-	@media (max-width: 1023px) {
+	@media (max-width: 1024px), (max-height: 950px) {
 		display: block;
 		position: fixed;
 		@include square(64px);
@@ -236,7 +236,7 @@ body {
 	.select2-container {
 		width: 100%;
 	}
-	@media (max-width: 1023px) {
+	@media (max-width: 1024px), (max-height: 950px) {
 		position: fixed;
 		top: 0;
 		right: 0;
@@ -282,6 +282,19 @@ body {
 		box-shadow: 0 1px 5px rgba(black, 0.16);
 		// padding: 20px;
 		background: #fff;
+		border-right: $border;
+		@media (prefers-color-scheme: dark) {
+			/* Dark theme styles go here */
+			background-color: $panel-bg-dark;
+			border-right-color: rgba(white, 0.1);
+			border: 0;
+		}
+	}
+	@media (max-height: 950px) {
+		max-width: 100%;
+		box-shadow: 0 1px 5px rgba(black, 0.16);
+		// padding: 20px;
+		background-color: rgba(0, 0, 0, 0.7) !important;
 		border-right: $border;
 		@media (prefers-color-scheme: dark) {
 			/* Dark theme styles go here */
@@ -638,7 +651,7 @@ body {
 		box-shadow: none !important;
 	}
 
-	@media (min-width: 768px) {
+	@media (min-width: 768px), (min-height: 768px) {
 		display: block;
 		position: fixed;
 		bottom: 0;

@@ -1,15 +1,13 @@
 // main.js
 
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, globalShortcut } = require('electron');
+const { app, Menu, BrowserWindow, globalShortcut } = require('electron');
 const { dialog } = require('electron');
 const electron = require('electron');
 const ipcMain = electron.ipcMain;
 const path = require('path');
 const fs = require('fs');
 const windowStateKeeper = require('electron-window-state');
-
-
 
 // Enable live reload for Electron too
 require('electron-reload')(__dirname, 
@@ -38,7 +36,7 @@ const createWindow = () => {
     width: mainWindowState.width,
     height: mainWindowState.height,
     minWidth: 640,
-    minHeight: 960,
+    minHeight: 480,
     frame: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -47,13 +45,21 @@ const createWindow = () => {
     },
   })
 
-    mainWindowState.manage(mainWindow);
+  mainWindowState.manage(mainWindow);
+  
+  // Make blank menu to remove zoom shortcuts
+  const isMac = process.platform === 'darwin'
+  const menuTemplate = [
+    // { role: 'appMenu' }
+    ...(isMac ? [{ label: app.name, submenu: []}] : [])]
+  const menu = Menu.buildFromTemplate(menuTemplate)
+  //Menu.setApplicationMenu(menu)
 
-    // and load the index.html of the app.
-    mainWindow.loadURL('http://127.0.0.1:8080/index.html');
-    mainWindow.loadFile('index.html');
+  // and load the index.html of the app.
+  mainWindow.loadURL('http://127.0.0.1:8080/index.html');
+  mainWindow.loadFile('index.html');
 
-    mainWindow.webContents.on('did-finish-load', () => {
+  mainWindow.webContents.on('did-finish-load', () => {
     /*
     * Titlebar actions
     */
@@ -73,10 +79,9 @@ const createWindow = () => {
         mainWindow.close();
     });
 
-
     /*
-     * Preset Actions
-     */
+    * Preset Actions
+    */
     ipcMain.on('save-preset', (event, preset, presetName) => {
       fs.mkdir(presetDir, e => {
         if (e && e.code === 'EEXIST') {
@@ -97,45 +102,41 @@ const createWindow = () => {
         }); 
       });   
     });
+  
+    ipcMain.on('load-preset', (event) => {
+      console.log("gap: " + app.getAppPath());
+  
+      if (!isDialogOpen) {
+        isDialogOpen = true;
+        dialog.showOpenDialog({
+            title: "Select a preset...",
+            properties: ['openFile'],
+            defaultPath: `${app.getAppPath()}/presets`,
+            filters: [
+              {
+                "name": "json",
+                "extensions": ["json"]
+              },
+            ]
+        }).then((pathObj) => {
+            if (!pathObj.canceled) {              
+                let filePath = pathObj.filePaths[0]
+                fs.readFile(filePath, 'utf8', (err, preset) => {
+                  if (err) {
+                      console.error(err)
+                      return
+                  }
+                  event.reply('load-preset-loaded', preset);
+                })
+            }
+            isDialogOpen = false;
+        });
+      }
+    });
+
+    mainWindow.webContents.openDevTools()
   });
-
-
-  ipcMain.on('load-preset', (event) => {
-    console.log("gap: " + app.getAppPath());
-
-    if (!isDialogOpen) {
-      isDialogOpen = true;
-      dialog.showOpenDialog({
-          title: "Select a preset...",
-          properties: ['openFile'],
-          defaultPath: `${app.getAppPath()}/presets`,
-          filters: [
-            {
-              "name": "json",
-              "extensions": ["json"]
-            },
-          ]
-      }).then((pathObj) => {
-          if (!pathObj.canceled) {              
-              let filePath = pathObj.filePaths[0]
-              fs.readFile(filePath, 'utf8', (err, preset) => {
-                if (err) {
-                    console.error(err)
-                    return
-                }
-                event.reply('load-preset-loaded', preset);
-              })
-          }
-          isDialogOpen = false;
-      });
-    }
-  });
- 
-
-
-
   // Open the DevTools. 
-  mainWindow.webContents.openDevTools()
 }
 
 // This method will be called when Electron has finished

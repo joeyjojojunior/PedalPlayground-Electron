@@ -1,18 +1,14 @@
 const { ipcRenderer, webFrame } = window.require('electron');
-var webFrame = require('electron').webFrame;
 var pedalImagePath = "public/images/pedals/";
 var pedalboardImagePath = "public/images/pedalboards/";
 var isPedalboardLocked = false;
-var draggable = null;
+var $draggable = null;
 var undoStack = [];
 var redoStack = [];
 var pedalUnits = "metric";
 var pedalboardUnits = "metric";
 
 $(document).ready(function () {
-	webFrame.setVisualZoomLevelLimits(1, 1);
-	webFrame.setLayoutZoomLevelLimits(0, 0);
-
 	// Populate Pedalboards and Pedals lists
 	GetPedalData();
 	GetPedalBoardData();	
@@ -682,17 +678,17 @@ function redo() {
 function setPedalboardsLockStatus() {
 	let lockBtn = $("#lock-pedalboards-btn")[0];
 	if (isPedalboardLocked) {
-		lockBtn.innerHTML = "Unlock Pedalboards"
+		lockBtn.innerHTML = "Unlock Boards"
 		lockBtn.classList.remove("btn-primary");
 		lockBtn.classList.add("btn-danger");
 	} else {
-		lockBtn.innerHTML = "Lock Pedalboards"
+		lockBtn.innerHTML = "Lock Boards"
 		lockBtn.classList.add("btn-primary");
 		lockBtn.classList.remove("btn-danger");
 	}
 
 	var isEnabled = !isPedalboardLocked ? "enable" : "disable";
-	this.$draggable.filter( function( i, elem ) {
+	$draggable.filter( function( i, elem ) {
 		return elem.classList.contains("pedalboard");
 	}).draggabilly(isEnabled);
 }

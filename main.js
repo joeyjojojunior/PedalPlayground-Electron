@@ -46,7 +46,6 @@ const createWindow = () => {
     * Titlebar actions
     */
     ipcMain.on('window-maximize', (event) => {
-      console.log("maximize");
       if (!mainWindow.isMaximized()) {
           mainWindow.maximize();
       } else {

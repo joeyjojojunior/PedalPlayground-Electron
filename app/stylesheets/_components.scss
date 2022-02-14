@@ -7,9 +7,12 @@ $header-bg-dark: #25292c;
 $canvas-bg-dark: #2e3337;
 $body-color-dark: lighten($dark, 60%);
 
-html {
-	
+a:focus {
+	outline: 0;
+}
 
+input[type="radio"]:focus {
+    outline:none;
 }
 
 body {
@@ -23,8 +26,7 @@ body {
 
 .site-header {
 	background: white;
-	padding-left: 12px;
-	height: 48px;
+	height: 40px;
 	position: relative;
 	display: flex;
 	justify-content: space-between;
@@ -32,6 +34,7 @@ body {
 	h1 {
 		text-transform: uppercase;
 		margin: 0;
+		padding-left: 12px;
 		font-size: 16px;
 		@media (min-width: 500px) {
 			font-size: 22px;
@@ -61,28 +64,28 @@ body {
 			color: #f8f8f8;
 		}
 	}
+	user-select: none;
 }
 
 .site-header-end {
 	display: flex;
 	flex-wrap: false;
 	align-items: center;
-
 }
 
 #titlebar-btns {
     display: flex;
 	align-items: center;
-	padding-left: 25px;
+	padding-left: 25px;	
 }
 
 .titlebar-btn {
-    margin: 0;
     border: 0;
     outline: 0;
-	height: 48px;
+	height: 40px;
 	width: 40px;
-	padding-top: 5px;
+	//margin-left: 10px;
+	//margin-right: 10px;
     background: transparent;
 }
 
@@ -136,6 +139,7 @@ body {
 }
 
 .sidebar-close {
+	user-select: none;
 	display: none;
 	@media (max-width: 1023px) {
 		display: block;
@@ -161,6 +165,7 @@ body {
 }
 
 .sidebar-open {
+	user-select: none;
 	display: none;
 	@media (max-width: 1023px) {
 		display: block;
@@ -203,6 +208,7 @@ body {
 }
 
 .sidebar {
+	user-select: none;
 	position: relative;
 	min-height: 100vh;
 	.select2-container {

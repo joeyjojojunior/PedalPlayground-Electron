@@ -8647,6 +8647,14 @@ th {
     transform: scale(1);
   }
 }
+a:focus {
+  outline: 0;
+}
+
+input[type=radio]:focus {
+  outline: none;
+}
+
 body {
   background: white;
   overflow: hidden;
@@ -8660,16 +8668,17 @@ body {
 
 .site-header {
   background: white;
-  padding-left: 12px;
-  height: 48px;
+  height: 40px;
   position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  user-select: none;
 }
 .site-header h1 {
   text-transform: uppercase;
   margin: 0;
+  padding-left: 12px;
   font-size: 16px;
 }
 @media (min-width: 500px) {
@@ -8718,12 +8727,10 @@ body {
 }
 
 .titlebar-btn {
-  margin: 0;
   border: 0;
   outline: 0;
-  height: 48px;
+  height: 40px;
   width: 40px;
-  padding-top: 5px;
   background: transparent;
 }
 
@@ -8781,6 +8788,7 @@ body {
 }
 
 .sidebar-close {
+  user-select: none;
   display: none;
 }
 @media (max-width: 1023px) {
@@ -8808,6 +8816,7 @@ body {
 }
 
 .sidebar-open {
+  user-select: none;
   display: none;
 }
 @media (max-width: 1023px) {
@@ -8867,6 +8876,7 @@ body {
 }
 
 .sidebar {
+  user-select: none;
   position: relative;
   min-height: 100vh;
 }

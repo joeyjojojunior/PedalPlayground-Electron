@@ -1,7 +1,7 @@
 {
-	"name": "pedal-playground",
+	"name": "pedal-playground-electron",
 	"version": "1.0.0",
-	"description": "A site to help you arrange pedals",
+	"description": "An electron port of PedalPlayground.com by Travis Lehman",
 	"main": "main.js",
 	"dependencies": {
 		"bootstrap": "^5.1.3",
@@ -44,7 +44,7 @@
 	},
 	"scripts": {
 		"start": "electron .",
-		"package": "npx electron-packager --overwrite .",
+		"package": "npx electron-packager --overwrite --prune=false .",
 		"build": "gulp default",
 		"build-all": "gulp all",
 		"serve": "http-server ./index.html -o",
@@ -60,7 +60,7 @@
 		"front",
 		"end"
 	],
-	"author": "Travis Lehman",
+	"author": "Travis Lehman, joeyjojojunior@github",
 	"license": "ISC",
 	"bugs": {
 		"url": "https://github.com/tehtrav/pedal-playground/issues"

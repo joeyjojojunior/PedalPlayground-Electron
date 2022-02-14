@@ -8659,8 +8659,9 @@ body {
 }
 
 .site-header {
-  background: #fff;
-  padding: 12px;
+  background: white;
+  padding-left: 12px;
+  height: 48px;
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -8702,6 +8703,64 @@ body {
   .site-header h1 {
     color: #f8f8f8;
   }
+}
+
+.site-header-end {
+  display: flex;
+  flex-wrap: false;
+  align-items: center;
+}
+
+#titlebar-btns {
+  display: flex;
+  align-items: center;
+  padding-left: 25px;
+}
+
+.titlebar-btn {
+  margin: 0;
+  border: 0;
+  outline: 0;
+  height: 48px;
+  width: 40px;
+  padding-top: 5px;
+  background: transparent;
+}
+
+.titlebar-btn:hover {
+  background: rgba(85, 82, 255, 0.1);
+}
+
+.titlebar-btn:active {
+  background: #8582ff;
+}
+
+.titlebar-btn svg path,
+.titlebar-btn svg rect,
+.titlebar-btn svg polygon {
+  fill: black;
+}
+
+.titlebar-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+#site-header-drag-region {
+  display: flex;
+  align-items: center;
+  width: 80%;
+  height: 100%;
+}
+
+.drag {
+  -webkit-user-select: none;
+  -webkit-app-region: drag;
+  user-select: none;
+}
+
+.no-drag {
+  -webkit-app-region: no-drag;
 }
 
 .site-body {

@@ -21461,6 +21461,13 @@ $(document).ready(function () {
 		}
 	});
 
+	$(".titlebar-btn-min").on('click', eventMinimizeWindow);
+	$(".titlebar-btn-max").on('click', eventMaximizeWindow);
+	$(".titlebar-btn-close").on('click', eventCloseWindow);
+
+
+
+
 
 
 
@@ -22029,6 +22036,19 @@ function setPedalboardsLockStatus() {
 function mmToInch(mm) {
 	return parseInt(mm, 10)/25.4;
 }
+
+function eventMinimizeWindow() {
+	ipcRenderer.send('window-minimize');
+}
+
+function eventMaximizeWindow() {
+	ipcRenderer.send('window-maximize');
+}
+
+function eventCloseWindow() {
+	ipcRenderer.send('window-close');
+}
+
 
 
 

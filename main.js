@@ -25,7 +25,10 @@ const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 1920,
-    height: 1480,
+    height: 1080,
+    minWidth: 640,
+    minHeight: 480,
+    frame: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
@@ -39,6 +42,30 @@ const createWindow = () => {
 
   mainWindow.webContents.on('did-finish-load', () => {
 
+    /*
+    * Titlebar actions
+    */
+    ipcMain.on('window-maximize', (event) => {
+      console.log("maximize");
+      if (!mainWindow.isMaximized()) {
+          mainWindow.maximize();
+      } else {
+          mainWindow.unmaximize();
+      }
+    });
+
+    ipcMain.on('window-minimize', (event) => {
+        mainWindow.minimize();
+    });
+
+    ipcMain.on('window-close', (event) => {
+        mainWindow.close();
+    });
+
+
+    /*
+     * Preset Actions
+     */
     ipcMain.on('save-preset', (event, preset, presetName) => {
       fs.mkdir(presetDir, e => {
         if (e && e.code === 'EEXIST') {
@@ -48,14 +75,15 @@ const createWindow = () => {
         } else {
             console.log('Success');
         }
+
         const fileName = (presetName.length > 0) ? presetName.replaceAll(' ', '_') : "unnamed_preset";
         fs.writeFile(`./presets/${fileName}.json`, preset, function (err) {
-        if (err) {
-            console.error(err)
-            return
-        }
-        event.reply('save-preset-saved', "Canvas Saved to file!");
-      }); 
+          if (err) {
+              console.error(err)
+              return
+          }
+          event.reply('save-preset-saved', "Canvas Saved to file!");
+        }); 
       });   
     });
   });

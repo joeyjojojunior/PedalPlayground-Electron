@@ -8655,6 +8655,11 @@ input[type=radio]:focus {
   outline: none;
 }
 
+button:focus {
+  outline: 0 !important;
+  border: 0;
+}
+
 body {
   background: white;
   overflow: hidden;
@@ -8735,7 +8740,7 @@ body {
 }
 
 .titlebar-btn:hover {
-  background: rgba(85, 82, 255, 0.1);
+  background: rgba(85, 82, 255, 0.2);
 }
 
 .titlebar-btn:active {
@@ -8768,6 +8773,11 @@ body {
 
 .no-drag {
   -webkit-app-region: no-drag;
+}
+
+.panel-action-locked {
+  padding-top: 10px;
+  color: red;
 }
 
 .site-body {

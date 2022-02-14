@@ -23,7 +23,6 @@ require('electron-reload')(__dirname,
 const presetDir = "./presets/"
 let isDialogOpen = false;
 
-
 const createWindow = () => {
   // Load the previous state with fallback to defaults
   let mainWindowState = windowStateKeeper({
@@ -173,6 +172,3 @@ app.on('browser-window-focus', function () {
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit()
 })
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.

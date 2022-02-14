@@ -7,12 +7,18 @@ $header-bg-dark: #25292c;
 $canvas-bg-dark: #2e3337;
 $body-color-dark: lighten($dark, 60%);
 
+
 a:focus {
 	outline: 0;
 }
 
 input[type="radio"]:focus {
     outline:none;
+}
+
+button:focus {
+	outline: 0 !important;
+	border: 0;
 }
 
 body {
@@ -84,15 +90,12 @@ body {
     outline: 0;
 	height: 40px;
 	width: 40px;
-	//margin-left: 10px;
-	//margin-right: 10px;
     background: transparent;
 }
 
 .titlebar-btn:hover {
-    background: rgba(85,82,255,0.1);
+    background: rgba(85,82,255,0.2);
 }
-
 
 .titlebar-btn:active {
     background: #8582ff;
@@ -125,6 +128,11 @@ body {
 
 .no-drag {
     -webkit-app-region: no-drag;
+}
+
+.panel-action-locked {
+	padding-top: 10px;
+	color: red;
 }
 
 .site-body {

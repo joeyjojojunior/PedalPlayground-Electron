@@ -125,11 +125,11 @@
 							<div class="tab-content">
 								<div role="tabpanel" class="tab-pane active" id="custom-pedalboard">
 									<form id="add-custom-pedalboard">
-										<div class="form-element left">
+										<div class="radio-btn-container form-element left">
 											<input type="radio" name="pedalboard-radio-units" value="metric" id="pedalboard-radio-metric" checked="true">
 											<label for="pedalboard-radio-metric">Metric</label>
 										</div>
-										<div class="form-element right">
+										<div class="radio-btn-container form-element right">
 											<input type="radio" name="pedalboard-radio-units" value="imperial" id="pedalboard-radio-imperial">
 											<label for="pedalboard-radio-imperial">Imperial</label>
 										</div>
@@ -180,11 +180,11 @@
 											/>
 										</div>
 										
-										<div class="form-element left">
+										<div class="radio-btn-container form-element left">
 											<input type="radio" name="pedal-radio-units" value="metric" id="pedal-radio-metric" checked="true">
 											<label for="pedal-radio-metric">Metric</label>
 										</div>
-										<div class="form-element right">
+										<div class="radio-btn-container form-element right">
 											<input type="radio" name="pedal-radio-units" value="imperial" id="pedal-radio-imperial">
 											<label for="pedal-radio-imperial">Imperial</label>
 										</div>
@@ -239,20 +239,22 @@
 
 						<div class="sidebar__section">
 							<h4>Pedalboard Actions</h4>
-							<button
-								id="lock-pedalboards-btn"
-								class="btn btn-primary btn-block"
-							>
-								Lock Pedalboards
-							</button>
-							<button
-								id="clear-canvas"
-								class="btn btn-primary btn-danger btn-block"
-								data-toggle="modal"
-								data-target="#clear-canvas-modal"
-							>
-								Clear
-							</button>
+							<div class="horizontal-sidebar-btns">
+								<button
+									id="lock-pedalboards-btn"
+									class="btn btn-primary"
+								>
+									Lock Pedalboards
+								</button>
+								<button
+									id="clear-canvas"
+									class="btn btn-primary btn-danger"
+									data-toggle="modal"
+									data-target="#clear-canvas-modal"
+								>
+									Clear
+								</button>
+							</div>
 						</div>
 
 						<!--  -->
@@ -267,13 +269,14 @@
 									required
 								/>
 								<p></p>
-								<button id="save-pedalboard-btn" class="btn btn-primary btn-block">
-									Save Pedalboard
-								</button>
-								<p></p>
-								<button id="load-pedalboard-btn" class="btn btn-primary btn-block">
-									Load Pedalboard
-								</button>
+								<div class="horizontal-sidebar-btns">
+									<button id="save-pedalboard-btn" class="btn btn-primary">
+										Save Pedalboard
+									</button>
+									<button id="load-pedalboard-btn" class="btn btn-primary">
+										Load Pedalboard
+									</button>
+								</div>
 							</div>					
 						</div>
 

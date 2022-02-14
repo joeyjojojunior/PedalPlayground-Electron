@@ -38,7 +38,7 @@ const createWindow = () => {
     width: mainWindowState.width,
     height: mainWindowState.height,
     minWidth: 640,
-    minHeight: 480,
+    minHeight: 960,
     frame: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -47,14 +47,13 @@ const createWindow = () => {
     },
   })
 
-  mainWindowState.manage(mainWindow);
+    mainWindowState.manage(mainWindow);
 
-  // and load the index.html of the app.
-  mainWindow.loadURL('http://127.0.0.1:8080/index.html');
-  mainWindow.loadFile('index.html');
+    // and load the index.html of the app.
+    mainWindow.loadURL('http://127.0.0.1:8080/index.html');
+    mainWindow.loadFile('index.html');
 
-  mainWindow.webContents.on('did-finish-load', () => {
-
+    mainWindow.webContents.on('did-finish-load', () => {
     /*
     * Titlebar actions
     */

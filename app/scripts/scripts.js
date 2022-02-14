@@ -1,5 +1,5 @@
 const { ipcRenderer, webFrame } = window.require('electron');
-
+var webFrame = require('electron').webFrame;
 var pedalImagePath = "public/images/pedals/";
 var pedalboardImagePath = "public/images/pedalboards/";
 var isPedalboardLocked = false;
@@ -10,6 +10,9 @@ var pedalUnits = "metric";
 var pedalboardUnits = "metric";
 
 $(document).ready(function () {
+	webFrame.setVisualZoomLevelLimits(1, 1);
+	webFrame.setLayoutZoomLevelLimits(0, 0);
+
 	// Populate Pedalboards and Pedals lists
 	GetPedalData();
 	GetPedalBoardData();	
@@ -187,17 +190,11 @@ $(document).ready(function () {
 		if (localStorage["isPedalboardLocked"] !== null) {
 			var isTrueSet = (localStorage["isPedalboardLocked"] === 'true');
 			isPedalboardLocked = isTrueSet;
-			console.log(isPedalboardLocked);
 			setPedalboardsLockStatus();
 		}	
 
 		if (localStorage["presetName"] !== null) {
-			console.log("yes");
-			console.log($("#pedalboard-saving .preset-name").val());
-			var presetName = localStorage["presetName"]
-			console.log(presetName)
 			$("#pedalboard-saving .preset-name").val(localStorage["presetName"]);
-			console.log($("#pedalboard-saving .preset-name").val());
 		}
 
 		pushToUndoStack();
@@ -270,7 +267,6 @@ $(document).ready(function () {
 	});
 
 	$("body").on("click", "#add-pedal button", function (event) {
-		console.log("apb")
 		var multiplier = $("#canvas-scale").val();
 		var serial = GenRandom.Job();
 		var selected = $("#add-pedal").find(":selected");
@@ -373,7 +369,6 @@ $(document).ready(function () {
 	$("body").on("click", "#add-custom-pedal .btn", function (event) {
 		var serial = GenRandom.Job();
 		var multiplier = $("#canvas-scale").val();
-		console.log(pedalUnits)
 		var width = (pedalUnits == "metric") ? mmToInch($("#add-custom-pedal .custom-width").val()) : $("#add-custom-pedal .custom-width").val();
 		var height = (pedalUnits == "metric") ? mmToInch($("#add-custom-pedal .custom-height").val()) : $("#add-custom-pedal .custom-height").val();
 		var scaledWidth = width * multiplier;
@@ -685,15 +680,12 @@ function redo() {
  * Lock or unlock pedalboard(s)
  */
 function setPedalboardsLockStatus() {
-	console.log("isFunc: " + isPedalboardLocked);
 	let lockBtn = $("#lock-pedalboards-btn")[0];
 	if (isPedalboardLocked) {
-		console.log("locked");
 		lockBtn.innerHTML = "Unlock Pedalboards"
 		lockBtn.classList.remove("btn-primary");
 		lockBtn.classList.add("btn-danger");
 	} else {
-		console.log("unlocked");
 		lockBtn.innerHTML = "Lock Pedalboards"
 		lockBtn.classList.add("btn-primary");
 		lockBtn.classList.remove("btn-danger");
@@ -749,7 +741,6 @@ function readyCanvas(pedal) {
 
 	$draggable.on("dragEnd", function (e) {
 		ga("send", "event", "Canvas", "moved", "dragend");
-		console.log("dragend")
 		pushToUndoStack();
 		savePedalCanvas();
 	});

@@ -8775,6 +8775,20 @@ body {
   -webkit-app-region: no-drag;
 }
 
+.horizontal-sidebar-btns {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+}
+.horizontal-sidebar-btns .btn {
+  width: 130px;
+}
+
+.radio-btn-container {
+  margin-bottom: 4px !important;
+}
+
 .panel-action-locked {
   padding-top: 10px;
   color: red;
@@ -9396,6 +9410,10 @@ body {
   .sidebar__tgs a {
     color: white;
   }
+}
+
+.sidebar__section {
+  padding: 10px;
 }
 
 .select2-container--default .select2-results__option--highlighted[aria-selected] {

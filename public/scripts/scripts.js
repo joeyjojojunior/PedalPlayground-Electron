@@ -21383,7 +21383,6 @@ S2.define('jquery.select2',[
 }));
 
 const { ipcRenderer, webFrame } = window.require('electron');
-
 var pedalImagePath = "public/images/pedals/";
 var pedalboardImagePath = "public/images/pedalboards/";
 var isPedalboardLocked = false;

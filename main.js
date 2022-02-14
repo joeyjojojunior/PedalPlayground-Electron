@@ -7,6 +7,9 @@ const electron = require('electron');
 const ipcMain = electron.ipcMain;
 const path = require('path');
 const fs = require('fs');
+const windowStateKeeper = require('electron-window-state');
+
+
 
 // Enable live reload for Electron too
 require('electron-reload')(__dirname, 
@@ -22,10 +25,19 @@ let isDialogOpen = false;
 
 
 const createWindow = () => {
+  // Load the previous state with fallback to defaults
+  let mainWindowState = windowStateKeeper({
+    defaultWidth: 1920,
+    defaultHeight: 1080
+  });
+
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 1920,
-    height: 1080,
+    title: 'PedalPlayground',
+    x: mainWindowState.x,
+    y: mainWindowState.y,
+    width: mainWindowState.width,
+    height: mainWindowState.height,
     minWidth: 640,
     minHeight: 480,
     frame: false,
@@ -35,6 +47,8 @@ const createWindow = () => {
       contextIsolation: false
     },
   })
+
+  mainWindowState.manage(mainWindow);
 
   // and load the index.html of the app.
   mainWindow.loadURL('http://127.0.0.1:8080/index.html');
@@ -130,16 +144,13 @@ const createWindow = () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  createWindow()
+  createWindow();
 
   app.on('activate', () => {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
-
-
-
 })
 
 app.on('browser-window-blur', function () {

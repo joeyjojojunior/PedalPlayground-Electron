@@ -6,6 +6,9 @@ $panel-bg-dark: #282d30;
 $header-bg-dark: #25292c;
 $canvas-bg-dark: #2e3337;
 $body-color-dark: lighten($dark, 60%);
+$site-header-height: 40px;
+$sidebar-width: 290px;
+
 
 
 a:focus {
@@ -32,7 +35,7 @@ body {
 
 .site-header {
 	background: white;
-	height: 40px;
+	height: $site-header-height;
 	position: relative;
 	display: flex;
 	justify-content: space-between;
@@ -88,7 +91,7 @@ body {
 .titlebar-btn {
     border: 0;
     outline: 0;
-	height: 40px;
+	height: $site-header-height;
 	width: 40px;
     background: transparent;
 }
@@ -278,7 +281,7 @@ body {
 		}
 	}
 	@media (min-width: 1024px) {
-		max-width: 290px;
+		max-width: $sidebar-width;
 		box-shadow: 0 1px 5px rgba(black, 0.16);
 		// padding: 20px;
 		background: #fff;
@@ -385,6 +388,8 @@ body {
 
 	&.pedal--custom,
 	&.pedalboard--custom {
+		top: $site-header-height;
+		left: $sidebar-width;
 		&.rotate-90 {
 			@include rotate(90deg);
 		}
@@ -476,6 +481,8 @@ body {
 	z-index: 1;
 	min-width: 5px;
 	min-height: 5px;
+	top: $site-header-height;
+	left: $sidebar-width;
 	&.rotate-90 {
 		.artwork {
 			@include rotate(90deg);
@@ -546,6 +553,8 @@ body {
 }
 
 .pedalboard {
+	top: $site-header-height;
+	left: $sidebar-width;
 	z-index: 1;
 	&--custom {
 		border: 5px solid #ddd;

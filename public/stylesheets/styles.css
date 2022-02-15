@@ -9064,6 +9064,10 @@ body {
   -o-transform: rotate(270deg);
   transform: rotate(270deg);
 }
+.item.pedal--custom, .item.pedalboard--custom {
+  top: 40px;
+  left: 290px;
+}
 .item.pedal--custom.rotate-90, .item.pedalboard--custom.rotate-90 {
   -webkit-transform: rotate(90deg);
   -ms-transform: rotate(90deg);
@@ -9142,6 +9146,8 @@ body {
   z-index: 1;
   min-width: 5px;
   min-height: 5px;
+  top: 40px;
+  left: 290px;
 }
 .pedal.rotate-90 .artwork {
   -webkit-transform: rotate(90deg);
@@ -9216,6 +9222,8 @@ body {
 }
 
 .pedalboard {
+  top: 40px;
+  left: 290px;
   z-index: 1;
 }
 .pedalboard--custom {

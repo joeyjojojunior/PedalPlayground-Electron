@@ -348,7 +348,6 @@ $(document).ready(function () {
 		<a class="delete"></a>\
 	</div>\
 </div>';
-
 		$(".canvas").prepend(pedal);
 		pushToUndoStack();
 		readyCanvas();
@@ -408,7 +407,8 @@ $(document).ready(function () {
 </div>';
 
 		$("#add-custom-pedal .invalid").removeClass("invalid");
-
+		var parent = $(pedal).parent();
+		console.log(parent.css({top: 0}));
 		if (width == "" || height == "") {
 			$("#add-custom-pedal .custom-height, #add-custom-pedal .custom-width").addClass(
 				"invalid"
@@ -423,10 +423,11 @@ $(document).ready(function () {
 			$(".canvas").append(pedal);
 			pushToUndoStack();
 			readyCanvas();
-			// console.log(dims);
 			ga("send", "event", "CustomPedal", "added", dims + " " + name);
 			event.preventDefault();
 		}
+		console.log($(pedal));
+
 	});
 
 	// Add custom pedalboard
@@ -742,8 +743,10 @@ function readyCanvas(pedal) {
 	});
 
 	$draggable.on("staticClick", function (event) {
+		console.log("click");
 		//rotatePedal(this);
 		var target = $(event.target);
+		console.log(target);
 		if (target.is(".delete")) {
 			deletePedal(this);
 			deselect();

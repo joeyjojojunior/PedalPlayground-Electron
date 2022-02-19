@@ -8,8 +8,11 @@ $canvas-bg-dark: #2e3337;
 $body-color-dark: lighten($dark, 60%);
 $site-header-height: 40px;
 $sidebar-width: 290px;
-
-
+$max-win-height: 855px;
+$max-win-width: 925px;
+$sidebar-padding: 8px;
+$button-padding: 3px;
+$input-height: 27px;
 
 a:focus {
 	outline: 0;
@@ -139,7 +142,7 @@ body {
 	justify-content: space-between;
 	margin: 0;
 	.btn {
-		width: 130px;
+		width: 134px;
 	}
 }
 
@@ -166,7 +169,7 @@ body {
 .sidebar-close {
 	user-select: none;
 	display: none;
-	@media (max-width: 1024px), (max-height: 950px) {
+	@media (max-width: $max-win-width), (max-height: $max-win-height) {
 		display: block;
 		position: absolute;
 		left: 0;
@@ -192,7 +195,7 @@ body {
 .sidebar-open {
 	user-select: none;
 	display: none;
-	@media (max-width: 1024px), (max-height: 950px) {
+	@media (max-width: $max-win-width), (max-height: $max-win-height) {
 		display: block;
 		position: fixed;
 		@include square(64px);
@@ -239,7 +242,7 @@ body {
 	.select2-container {
 		width: 100%;
 	}
-	@media (max-width: 1024px), (max-height: 950px) {
+	@media (max-width: $max-win-width), (max-height: $max-win-height) {
 		position: fixed;
 		top: 0;
 		right: 0;
@@ -280,7 +283,7 @@ body {
 			}
 		}
 	}
-	@media (min-width: 1024px) {
+	@media (min-width: $max-win-width) {
 		max-width: $sidebar-width;
 		box-shadow: 0 1px 5px rgba(black, 0.16);
 		// padding: 20px;
@@ -293,7 +296,7 @@ body {
 			border: 0;
 		}
 	}
-	@media (max-height: 950px) {
+	@media (max-height: $max-win-height) {
 		max-width: 100%;
 		box-shadow: 0 1px 5px rgba(black, 0.16);
 		// padding: 20px;
@@ -660,7 +663,7 @@ body {
 		box-shadow: none !important;
 	}
 
-	@media (min-width: 768px), (min-height: 768px) {
+	@media (min-width: 768px) and (min-height: 768px) {
 		display: block;
 		position: fixed;
 		bottom: 0;
@@ -745,8 +748,41 @@ body {
 }
 
 .sidebar__section {
-	padding: 10px;
+	padding: $sidebar-padding
 }
+
+.sidebar {
+	h4 {
+		font-size: 14px;
+	}
+	input[type="number"], input[type="text"], .custom-name {
+		height: $input-height;
+	}
+	.input-group {
+		height: 20px !important;
+		.custom-color {
+			height: $input-height;
+		}
+		.input-group-addon {
+			padding-top: 0;
+			padding-bottom: 0;
+		}
+	}
+	input[type="submit"] {
+		padding: $button-padding;
+		height: 100%;
+		align-items: center;
+	}
+	button {
+		padding: $button-padding;
+	}
+	.select2-selection {
+		height: $input-height;
+	}
+}
+
+
+
 
 
 .select2-container--default .select2-results__option--highlighted[aria-selected] {

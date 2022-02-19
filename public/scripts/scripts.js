@@ -21386,6 +21386,8 @@ const { ipcRenderer, webFrame } = window.require('electron');
 var pedalImagePath = "public/images/pedals/";
 var pedalboardImagePath = "public/images/pedalboards/";
 var isPedalboardLocked = false;
+var isPresetEdited = false;
+var isFirstRun = true;
 var $draggable = null;
 var undoStack = [];
 var redoStack = [];
@@ -21401,8 +21403,7 @@ $(document).ready(function () {
 	 * Save/Load pedalboard(s)
 	 */
 	$("body").on("click", "#save-pedalboard-btn", function (event) {
-		var presetName = $("#pedalboard-saving .preset-name").val();
-		savePresetToFile(presetName);
+		savePresetToFile();
 	})
 
 	$("body").on("click", "#load-pedalboard-btn", function (event) {
@@ -21411,6 +21412,18 @@ $(document).ready(function () {
 
 	$("body").on('input', ".preset-name", function(event) {
 		localStorage["presetName"] = $("#pedalboard-saving .preset-name").val();
+	});
+
+	$("body").on("keydown", function (event) {
+		if (event.originalEvent.ctrlKey && event.originalEvent.key === "s") {
+			savePresetToFile();
+		}
+	});
+
+	$("body").on("keydown", function (event) {
+		if (event.originalEvent.ctrlKey && event.originalEvent.key === "o") {
+			loadPresetFromFile();
+		}
 	});
 
 	/*
@@ -21434,6 +21447,33 @@ $(document).ready(function () {
 	$("body").on("keydown", function (event) {
 		if (event.originalEvent.ctrlKey && event.originalEvent.key === "y") {
 			redo();
+		}
+	});
+
+
+	$("body").on("keydown", function (event) {
+		if (event.originalEvent.ctrlKey && event.originalEvent.key === "c") {
+			var selectedObj = $(".canvas .selected")[0];
+			if (selectedObj) {
+				localStorage.setItem("copiedItem", selectedObj.outerHTML);
+				readyCanvas();
+				pushToUndoStack();
+			}
+		}
+	});
+
+	$("body").on("keydown", function (event) {
+		if (event.originalEvent.ctrlKey && event.originalEvent.key === "v") {
+			if (localStorage["copiedItem"]) {
+				var copiedItem = document.createElement("div");
+				copiedItem.innerHTML = localStorage["copiedItem"];
+				var add = copiedItem.firstChild;
+				$(".canvas").append(add);
+				var addedItemLeftPosition = parseInt(add.style.left);
+				add.style.left =  `${addedItemLeftPosition + 50}px`;
+				readyCanvas();
+				pushToUndoStack();
+			}
 		}
 	});
 
@@ -21477,6 +21517,13 @@ $(document).ready(function () {
 	$(".btn").mouseup(function(){
 		$(this).blur();
 	})
+
+	window.onbeforeunload = function(){
+		// Do something	
+		localStorage["isPresetEdited"] = isPresetEdited;
+ 
+		return false;
+	}
 
 
 
@@ -21576,8 +21623,24 @@ $(document).ready(function () {
 		if (localStorage["presetName"] !== null) {
 			$("#pedalboard-saving .preset-name").val(localStorage["presetName"]);
 		}
+		
+	
+		
+		setTimeout( () => {
+			if (localStorage["presetPath"] !== null)  {
+				console.log(localStorage["presetPath"]);
+				ipcRenderer.send('set-preset-path', localStorage["presetPath"]);
+			}
+		}, 1000);
 
+
+		if (localStorage["isPresetEdited"] !== null) {
+			console.log(isPresetEdited);
+			isPresetEdited = localStorage["isPresetEdited"];
+			isFirstRun = false; 
+		}
 		pushToUndoStack();
+		isFirstRun = false;
 	});
 
 	// When user changes scale, update stuffs
@@ -21642,6 +21705,9 @@ $(document).ready(function () {
 		$("#pedalboard-saving .preset-name").val('') 
 		$("#clear-canvas-modal").modal("hide");
 		isPedalboardLocked = false;
+		localStorage["presetPath"] = null;
+		localStorage["isPedalboardLocked"] = null;
+		ipcRenderer.send('set-preset-path', '');
 		setPedalboardsLockStatus();
 		savePedalCanvas();
 	});
@@ -21689,7 +21755,6 @@ $(document).ready(function () {
 		$(".canvas").append(pedal);
 		readyCanvas();
 		pushToUndoStack();
-		ga("send", "event", "Pedal", "added", name);
 		event.preventDefault();
 	});
 
@@ -21735,7 +21800,6 @@ $(document).ready(function () {
 		$(".canvas").prepend(pedal);
 		pushToUndoStack();
 		readyCanvas();
-		ga("send", "event", "Pedalboard", "added", name);
 		event.preventDefault();
 	});
 
@@ -21807,7 +21871,6 @@ $(document).ready(function () {
 			$(".canvas").append(pedal);
 			pushToUndoStack();
 			readyCanvas();
-			ga("send", "event", "CustomPedal", "added", dims + " " + name);
 			event.preventDefault();
 		}
 		console.log($(pedal));
@@ -21862,14 +21925,13 @@ $(document).ready(function () {
 			$(".canvas").prepend(pedalboard);
 			pushToUndoStack();
 			readyCanvas();
-			ga("send", "event", "CustomPedalboard", "added", dims + " " + name);
 			event.preventDefault();
 		}
 	});
 
 	// On keydown of "D" or "delete" remove pedal
 	$("body").on("keydown keyup", function (event) {
-		var selectedObj = $(".canvas .selected")[0];
+		var selectedObj = $(".canvas .selected")[0];		
 		if (selectedObj && !(selectedObj.classList.contains("pedalboard") && isPedalboardLocked)) {
 			if (event.which == 68 || event.which == 8) {
 				deleteSelected();
@@ -21996,27 +22058,29 @@ $(document).ready(function () {
 /*
  * Save/Load pedalboard(s)
  */
-function savePresetToFile(presetName) {
+function savePresetToFile() {
 	var preset = {
-		name: presetName,
+		name: $("#pedalboard-saving .preset-name").val(),
 		isPedalboardLocked: isPedalboardLocked,
 		canvasScale: $("#canvas-scale").val(),
 		canvas: JSON.stringify($(".canvas").html())
 	};
-	ipcRenderer.send('save-preset', JSON.stringify(preset), presetName);
+	ipcRenderer.send('save-preset', JSON.stringify(preset), preset.name);
 }
 
-ipcRenderer.on('save-preset-saved', (event, reply) => {
-	console.log(reply);
+ipcRenderer.on('save-preset-saved', (event, presetPath) => {
+	localStorage["presetPath"] = presetPath;
+	isPresetEdited = false;
+	isFirstRun = true;
+	setPedalboardSavingHeader();
 });
 
 function loadPresetFromFile(e) {
 	ipcRenderer.send('load-preset');
 }
 
-ipcRenderer.on('load-preset-loaded', (event, preset) => {
+ipcRenderer.on('load-preset-loaded', (event, preset, presetPath) => {
 	var presetJSON = JSON.parse(preset);
-
 	$("#pedalboard-saving .preset-name").val(presetJSON.name); 
 	isPedalboardLocked = presetJSON.isPedalboardLocked;
 	$("#canvas-scale").val(presetJSON.canvasScale);
@@ -22024,10 +22088,15 @@ ipcRenderer.on('load-preset-loaded', (event, preset) => {
 	undoStack = [];
 	redoStack = [];
 	localStorage["presetName"] = $("#pedalboard-saving .preset-name").val();
+	localStorage["presetPath"] = presetPath;
+	isPresetEdited = false;
+	isFirstRun = true;
+	setPedalboardSavingHeader();
 	pushToUndoStack();
 	readyCanvas();
 	savePedalCanvas();
 	setPedalboardsLockStatus();
+	
 });
 
 
@@ -22040,10 +22109,21 @@ function undo() {
 		$(".canvas").html(JSON.parse(this.undoStack[this.undoStack.length-1]));
 		readyCanvas();
 		savePedalCanvas();
+	} 
+	
+	if (undoStack.length === 1) {
+		isPresetEdited = false;
+		setPedalboardSavingHeader();
 	}
 }
 
 function pushToUndoStack() {
+	console.log($(".pedalboard-saving-header"));
+	if (!isFirstRun) {
+		console.log("undo stack not first run");
+		isPresetEdited = true;
+		setPedalboardSavingHeader();
+	}
 	undoStack.push(JSON.stringify($(".canvas").html()));
 }
 
@@ -22055,6 +22135,23 @@ function redo() {
 		readyCanvas();
 		savePedalCanvas();
 	}
+
+	if (undoStack.length > 1) {
+		isPresetEdited = true;
+		setPedalboardSavingHeader();
+	}
+}
+
+function setPedalboardSavingHeader() {
+	console.log("set header");
+	if (isPresetEdited) {
+		$(".pedalboard-saving-header").css("color", "red");
+		$(".pedalboard-saving-header").html("Pedalboard Saving (Unsaved)");
+	} else {
+		$(".pedalboard-saving-header").css("color", "black");
+		$(".pedalboard-saving-header").html("Pedalboard Saving");
+	}
+	
 }
 
 /*
@@ -22121,7 +22218,6 @@ function readyCanvas(pedal) {
 	*/
 
 	$draggable.on("dragEnd", function (e) {
-		ga("send", "event", "Canvas", "moved", "dragend");
 		pushToUndoStack();
 		savePedalCanvas();
 	});
@@ -22169,7 +22265,6 @@ function savePedalCanvas() {
 
 /*
 function rotatePedal(pedal) {
-	ga("send", "event", "Pedal", "clicked", "rotate");
 	if ($(pedal).hasClass("rotate-90")) {
 		$(pedal).removeClass("rotate-90");
 		$(pedal).addClass("rotate-180");

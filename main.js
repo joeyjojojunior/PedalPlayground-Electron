@@ -18,7 +18,8 @@ require('electron-reload')(__dirname,
   }
 );
 
-const presetDir = "./presets/"
+const defaultPresetDir = "./presets/"
+let presetPath = null;
 let isDialogOpen = false;
 
 const createWindow = () => {
@@ -83,55 +84,82 @@ const createWindow = () => {
     * Preset Actions
     */
     ipcMain.on('save-preset', (event, preset, presetName) => {
-      fs.mkdir(presetDir, e => {
-        if (e && e.code === 'EEXIST') {
-          console.log("Directory already exists.");
-        } else if(e) {
-            console.error(e);
-        } else {
-            console.log('Success');
-        }
-
-        const fileName = (presetName.length > 0) ? presetName.replaceAll(' ', '_') : "unnamed_preset";
-        fs.writeFile(`./presets/${fileName}.json`, preset, function (err) {
-          if (err) {
-              console.error(err)
-              return
+      event.preventDefault();
+      let searchPath = (presetPath !== null) ? presetPath : '.';
+      if (presetPath !== null) {
+        fs.stat(presetPath, function(err, stat) {
+          if(err == null) {
+            console.log('File exists');
+            fs.writeFile(searchPath, preset, function (err) {
+              console.log("writing");
+              if (err) {
+                  console.error(err)
+                  return
+              }
+              event.reply('save-preset-saved', presetPath);
+            }); 
           }
-          event.reply('save-preset-saved', "Canvas Saved to file!");
-        }); 
-      });   
+        });
+      } else {
+        console.log("not null")
+        if (!isDialogOpen) {
+          isDialogOpen = true;
+        dialog.showSaveDialog({
+          title: "Save preset...",
+          properties: ['createDirectory'],
+          defaultPath: `${defaultPresetDir}`,
+          filters: [
+            {
+              "name": "json",
+              "extensions": ["json"]
+            },]
+        }).then((pathObj) => {
+            if (!pathObj.canceled) {              
+              var filePath = pathObj.filePath;
+              presetPath = filePath;
+              fs.writeFile(filePath, preset, function (err) {
+                if (err) {
+                    console.error(err)
+                    return
+                }
+                event.reply('save-preset-saved', presetPath);
+              }); 
+            }
+        });
+        isDialogOpen = false;
+      }
+    }
     });
   
     ipcMain.on('load-preset', (event) => {
-      console.log("gap: " + app.getAppPath());
-  
-      if (!isDialogOpen) {
-        isDialogOpen = true;
-        dialog.showOpenDialog({
-            title: "Select a preset...",
-            properties: ['openFile'],
-            defaultPath: `${app.getAppPath()}/presets`,
-            filters: [
-              {
-                "name": "json",
-                "extensions": ["json"]
-              },
-            ]
-        }).then((pathObj) => {
-            if (!pathObj.canceled) {              
-                let filePath = pathObj.filePaths[0]
-                fs.readFile(filePath, 'utf8', (err, preset) => {
-                  if (err) {
-                      console.error(err)
-                      return
-                  }
-                  event.reply('load-preset-loaded', preset);
-                })
-            }
-            isDialogOpen = false;
-        });
-      }
+      event.preventDefault();
+      dialog.showOpenDialog({
+          title: "Load preset...",
+          properties: ['openFile'],
+          defaultPath: `${app.getAppPath()}/presets`,
+          filters: [
+            {
+              "name": "json",
+              "extensions": ["json"]
+            },
+          ]
+      }).then((pathObj) => {
+          if (!pathObj.canceled) {              
+              let filePath = pathObj.filePaths[0]
+              presetPath = filePath;
+              fs.readFile(filePath, 'utf8', (err, preset) => {
+                if (err) {
+                    console.error(err)
+                    return
+                }
+                event.reply('load-preset-loaded', preset, presetPath);
+              })
+          }
+      });
+    });
+
+    ipcMain.on('set-preset-path', (event, newPath) => {
+      presetPath = (newPath.length > 0) ? newPath : null; 
     });
 
     mainWindow.webContents.openDevTools()

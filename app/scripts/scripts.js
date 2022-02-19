@@ -19,8 +19,13 @@ $(document).ready(function () {
 	 * Save/Load pedalboard(s)
 	 */
 	$("body").on("click", "#save-pedalboard-btn", function (event) {
-		savePresetToFile();
+		savePresetToFile(false);
 	})
+
+	$("body").on("click", "#save-as-pedalboard-btn", function (event) {
+		savePresetToFile(true);
+	})
+
 
 	$("body").on("click", "#load-pedalboard-btn", function (event) {
 		loadPresetFromFile();
@@ -301,7 +306,7 @@ $(document).ready(function () {
 		localStorage["presetPath"] = null;
 		localStorage["isPedalboardLocked"] = null;
 		undoStack = [];
-	redoStack = [];
+		redoStack = [];
 		ipcRenderer.send('set-preset-path', '');
 		setPedalboardsLockStatus();
 		savePedalCanvas();
@@ -650,14 +655,14 @@ $(document).ready(function () {
 /*
  * Save/Load pedalboard(s)
  */
-function savePresetToFile() {
+function savePresetToFile(isSaveAs) {
 	var preset = {
 		name: $("#pedalboard-saving .preset-name").val(),
 		isPedalboardLocked: isPedalboardLocked,
 		canvasScale: $("#canvas-scale").val(),
 		canvas: JSON.stringify($(".canvas").html())
 	};
-	ipcRenderer.send('save-preset', JSON.stringify(preset), preset.name);
+	ipcRenderer.send('save-preset', JSON.stringify(preset), isSaveAs);
 }
 
 ipcRenderer.on('save-preset-saved', (event, presetPath) => {

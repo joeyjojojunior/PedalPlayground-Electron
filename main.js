@@ -83,10 +83,10 @@ const createWindow = () => {
     /*
     * Preset Actions
     */
-    ipcMain.on('save-preset', (event, preset, presetName) => {
+    ipcMain.on('save-preset', (event, preset, isSaveAs) => {
       event.preventDefault();
       let searchPath = (presetPath !== null) ? presetPath : '.';
-      if (presetPath !== null) {
+      if (!isSaveAs && presetPath !== null) {
         fs.stat(presetPath, function(err, stat) {
           if(err == null) {
             console.log('File exists');
@@ -101,7 +101,6 @@ const createWindow = () => {
           }
         });
       } else {
-        console.log("not null")
         if (!isDialogOpen) {
           isDialogOpen = true;
         dialog.showSaveDialog({

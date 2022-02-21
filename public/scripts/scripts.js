@@ -21916,7 +21916,7 @@ $(document).ready(function () {
 		}
 	});
 
-	// On keydown of "D" or "delete" remove pedal
+	// On keydown of "Delete" remove pedal
 	$("body").on("keydown keyup", function (event) {
 		var selectedObj = $(".canvas .selected")[0];		
 		if (selectedObj && !(selectedObj.classList.contains("pedalboard") && isPedalboardLocked)) {
@@ -21960,10 +21960,12 @@ $(document).ready(function () {
 	// Move left
 	$("body").on("keydown", function (event) {
 		if (event.which == 37) {
-			var current = parseInt($(".canvas .selected").css("left"));
-			var selectedObj = $(".canvas .selected")[0];
-			if (selectedObj && !(selectedObj.classList.contains("pedalboard") && isPedalboardLocked)) {
-				$(".canvas .selected").css("left", current - 1);
+			var pedalboard = $(".canvas .pedalboard")[0];
+			if (pedalboard && !(pedalboard.classList.contains("pedalboard") && isPedalboardLocked)) {
+				$($(".item"), $(".canvas")).each(function(){
+					var current = parseInt($(this).css("left"));
+					$(this).css("left", current - 1);
+				})
 				pushToUndoStack();
 				savePedalCanvas();
 			}
@@ -21973,11 +21975,12 @@ $(document).ready(function () {
 	// Move up
 	$("body").on("keydown", function (event) {
 		if (event.which == 38) {
-			var current = parseInt($(".canvas .selected").css("top"));
-			var selectedObj = $(".canvas .selected")[0];
-			if (selectedObj && !(selectedObj.classList.contains("pedalboard") && isPedalboardLocked)) {
-				$(".canvas .selected").css("top", current - 1);
-				event.preventDefault();
+			var pedalboard = $(".canvas .pedalboard")[0];
+			if (pedalboard && !(pedalboard.classList.contains("pedalboard") && isPedalboardLocked)) {
+				$($(".item"), $(".canvas")).each(function(){
+					var current = parseInt($(this).css("top"));
+					$(this).css("top", current - 1);
+				})
 				pushToUndoStack();
 				savePedalCanvas();
 			}
@@ -21987,10 +21990,12 @@ $(document).ready(function () {
 	// Move right
 	$("body").on("keydown", function (event) {
 		if (event.which == 39) {
-			var current = parseInt($(".canvas .selected").css("left"));
-			var selectedObj = $(".canvas .selected")[0];
-			if (selectedObj && !(selectedObj.classList.contains("pedalboard") && isPedalboardLocked)) {
-				$(".canvas .selected").css("left", current + 1);
+			var pedalboard = $(".canvas .pedalboard")[0];
+			if (pedalboard && !(pedalboard.classList.contains("pedalboard") && isPedalboardLocked)) {
+				$($(".item"), $(".canvas")).each(function(){
+					var current = parseInt($(this).css("left"));
+					$(this).css("left", current + 1);
+				})
 				pushToUndoStack();
 				savePedalCanvas();
 			}
@@ -22000,11 +22005,12 @@ $(document).ready(function () {
 	// Move down
 	$("body").on("keydown", function (event) {
 		if (event.which == 40) {
-			var current = parseInt($(".canvas .selected").css("top"));
-			var selectedObj = $(".canvas .selected")[0];
-			if (selectedObj && !(selectedObj.classList.contains("pedalboard") && isPedalboardLocked)) {
-				$(".canvas .selected").css("top", current + 1);
-				event.preventDefault();
+			var pedalboard = $(".canvas .pedalboard")[0];
+			if (pedalboard && !(pedalboard.classList.contains("pedalboard") && isPedalboardLocked)) {
+				$($(".item"), $(".canvas")).each(function(){
+					var current = parseInt($(this).css("top"));
+					$(this).css("top", current + 1);
+				})
 				pushToUndoStack();
 				savePedalCanvas();
 			}
@@ -22290,6 +22296,7 @@ function deletePedal(pedal) {
 }
 
 function deselect() {
+	console.log("deselect");
 	$(".canvas .panel").remove();
 	$(".canvas .selected").removeClass("selected");
 	savePedalCanvas();
@@ -22561,11 +22568,21 @@ $("body").on("click", ".item", function (e) {
 
 	// add stuff
 	$(pedal).addClass("selected");
+
 	$(".canvas").after(markup);
 
 	// Prevent bubble up to .canvas
 	e.stopPropagation();
 });
+
+$("body").on("mousedown", ".item", function(e) {
+	if (e.which === 3) {
+		$($(".item"), $(".canvas")).each(function() {
+			$(this).addClass("selected");
+		})
+	}
+	e.stopPropagation();
+})
 
 $("body").on("click", 'a[href="#rename"]', function () {
 	e.stopImmediatePropagation();

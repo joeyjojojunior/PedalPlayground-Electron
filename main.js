@@ -161,7 +161,7 @@ const createWindow = () => {
       presetPath = (newPath.length > 0) ? newPath : null; 
     });
     
-    mainWindow.webContents.openDevTools()
+    //mainWindow.webContents.openDevTools()
   });
   // Open the DevTools. 
 }

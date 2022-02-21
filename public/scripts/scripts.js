@@ -21960,11 +21960,13 @@ $(document).ready(function () {
 	// Move left
 	$("body").on("keydown", function (event) {
 		if (event.which == 37) {
+			console.log(event.originalEvent.shiftKey);
+			var increment = (event.originalEvent.shiftKey) ? 25 : 1;
 			var pedalboard = $(".canvas .pedalboard")[0];
 			if (pedalboard && !(pedalboard.classList.contains("pedalboard") && isPedalboardLocked)) {
-				$($(".item"), $(".canvas")).each(function(){
+				$($(".selected"), $(".canvas")).each(function(){
 					var current = parseInt($(this).css("left"));
-					$(this).css("left", current - 1);
+					$(this).css("left", current - increment);
 				})
 				pushToUndoStack();
 				savePedalCanvas();
@@ -21975,11 +21977,12 @@ $(document).ready(function () {
 	// Move up
 	$("body").on("keydown", function (event) {
 		if (event.which == 38) {
+			var increment = (event.originalEvent.shiftKey) ? 25 : 1;
 			var pedalboard = $(".canvas .pedalboard")[0];
 			if (pedalboard && !(pedalboard.classList.contains("pedalboard") && isPedalboardLocked)) {
-				$($(".item"), $(".canvas")).each(function(){
+				$($(".selected"), $(".canvas")).each(function(){
 					var current = parseInt($(this).css("top"));
-					$(this).css("top", current - 1);
+					$(this).css("top", current - increment);
 				})
 				pushToUndoStack();
 				savePedalCanvas();
@@ -21990,11 +21993,12 @@ $(document).ready(function () {
 	// Move right
 	$("body").on("keydown", function (event) {
 		if (event.which == 39) {
+			var increment = (event.originalEvent.shiftKey) ? 25 : 1;
 			var pedalboard = $(".canvas .pedalboard")[0];
 			if (pedalboard && !(pedalboard.classList.contains("pedalboard") && isPedalboardLocked)) {
-				$($(".item"), $(".canvas")).each(function(){
+				$($(".selected"), $(".canvas")).each(function(){
 					var current = parseInt($(this).css("left"));
-					$(this).css("left", current + 1);
+					$(this).css("left", current + increment);
 				})
 				pushToUndoStack();
 				savePedalCanvas();
@@ -22005,11 +22009,12 @@ $(document).ready(function () {
 	// Move down
 	$("body").on("keydown", function (event) {
 		if (event.which == 40) {
+			var increment = (event.originalEvent.shiftKey) ? 25 : 1;
 			var pedalboard = $(".canvas .pedalboard")[0];
 			if (pedalboard && !(pedalboard.classList.contains("pedalboard") && isPedalboardLocked)) {
-				$($(".item"), $(".canvas")).each(function(){
+				$($(".selected"), $(".canvas")).each(function(){
 					var current = parseInt($(this).css("top"));
-					$(this).css("top", current + 1);
+					$(this).css("top", current + increment);
 				})
 				pushToUndoStack();
 				savePedalCanvas();
@@ -22025,7 +22030,7 @@ $(document).ready(function () {
 		event.stopImmediatePropagation();
 
 		var selectedObj = $(".canvas .selected")[0];
-		if (selectedObj && !(selectedObj.classList.contains("pedalboard") && isPedalboardLocked)) {
+		if (selectedObj && !(selectedObj.classList.contains("pedalboard") && isPedalboardLocked) && $(".selected").length === 1) {
 			if (event.which == 82) {
 				if ($(".canvas .selected").hasClass("rotate-90")) {
 					$(".canvas .selected").removeClass("rotate-90");

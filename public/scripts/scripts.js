@@ -21441,6 +21441,15 @@ $(document).ready(function () {
 		setPedalboardsLockStatus();
 	})
 
+	$("body").on("keydown", function (event) {
+		if (event.originalEvent.ctrlKey && event.originalEvent.key === "l") {
+			isPedalboardLocked = !isPedalboardLocked;
+			localStorage["isPedalboardLocked"] = isPedalboardLocked;
+			setPedalboardsLockStatus();		
+		}
+	});
+
+
 	/*
 	 * Undo (Ctrl+Z) & Redo (Ctrl+Y)
 	 */

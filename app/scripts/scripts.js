@@ -48,6 +48,12 @@ $(document).ready(function () {
 		}
 	});
 
+	$("body").on("keydown", function (event) {
+		if (event.originalEvent.ctrlKey && event.originalEvent.key === "a") {
+			selectAll();
+		}
+	});
+
 	/*
 	 * Lock pedalboard(s)
 	 */
@@ -827,13 +833,15 @@ function eventCloseWindow() {
 	ipcRenderer.send('window-close');
 }
 
-
 function mmToInch(mm) {
 	return parseInt(mm, 10)/25.4;
 }
 
-
-
+function selectAll() {
+	$($(".item"), $(".canvas")).each(function() {
+		$(this).addClass("selected");
+	})
+}
 
 
 
@@ -1207,9 +1215,7 @@ $("body").on("click", ".item", function (e) {
 
 $("body").on("mousedown", ".item", function(e) {
 	if (e.which === 3) {
-		$($(".item"), $(".canvas")).each(function() {
-			$(this).addClass("selected");
-		})
+		selectAll();
 	}
 	e.stopPropagation();
 })

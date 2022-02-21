@@ -21410,13 +21410,14 @@ $(document).ready(function () {
 		savePresetToFile(true);
 	})
 
-
 	$("body").on("click", "#load-pedalboard-btn", function (event) {
 		loadPresetFromFile();
 	})
 
 	$("body").on('input', ".preset-name", function(event) {
 		localStorage["presetName"] = $("#pedalboard-saving .preset-name").val();
+		isPresetEdited = true;
+		setPedalboardSavingHeader();
 	});
 
 	$("body").on("keydown", function (event) {
@@ -21456,6 +21457,9 @@ $(document).ready(function () {
 	});
 
 
+	/*
+	 * Copy (Ctrl+C) & Paste (Ctrl+V)
+	 */
 	$("body").on("keydown", function (event) {
 		if (event.originalEvent.ctrlKey && event.originalEvent.key === "c") {
 			var selectedObj = $(".canvas .selected")[0];
@@ -21603,26 +21607,27 @@ $(document).ready(function () {
 			$("#pedalboard-saving .preset-name").val(localStorage["presetName"]);
 		}
 
-		if (localStorage["undoStack"] !== null) {
+		if (localStorage["undoStack"] !== null && localStorage["undoStack"] !== undefined) {
 			undoStack = JSON.parse(localStorage["undoStack"]);
 		}
 
-		if (localStorage["redoStack"] !== null) {
+		if (localStorage["redoStack"] !== null && localStorage["redoStack"] !== undefined) {
 			redoStack = JSON.parse(localStorage["redoStack"]);
 		}
 		
 		setTimeout( () => {
-			if (localStorage["presetPath"] !== null)  {
+			if (localStorage["presetPath"] !== null && localStorage["presetPath"] !== undefined)  {
 				ipcRenderer.send('set-preset-path', localStorage["presetPath"]);
 			}
 		}, 1000);
 
 		if (localStorage["isPresetEdited"] !== null) {
-			isPresetEdited = localStorage["isPresetEdited"];
-			isFirstRun = false; 
+			isPresetEdited = JSON.parse(localStorage["isPresetEdited"]);
 		}
+
 		pushToUndoStack();
 		isFirstRun = false;
+		setPedalboardSavingHeader();
 	});
 
 	// When user changes scale, update stuffs
@@ -21687,6 +21692,7 @@ $(document).ready(function () {
 		$("#pedalboard-saving .preset-name").val('') 
 		$("#clear-canvas-modal").modal("hide");
 		isPedalboardLocked = false;
+		localStorage["presetName"] = "";
 		localStorage["presetPath"] = null;
 		localStorage["isPedalboardLocked"] = null;
 		undoStack = [];
@@ -21914,7 +21920,7 @@ $(document).ready(function () {
 	$("body").on("keydown keyup", function (event) {
 		var selectedObj = $(".canvas .selected")[0];		
 		if (selectedObj && !(selectedObj.classList.contains("pedalboard") && isPedalboardLocked)) {
-			if (event.which == 68 || event.which == 8) {
+			if (event.which == 46) {
 				deleteSelected();
 				$(".site-body > .panel").remove();
 				savePedalCanvas();
@@ -22070,7 +22076,6 @@ ipcRenderer.on('load-preset-loaded', (event, preset, presetPath) => {
 	redoStack = [];
 	localStorage["presetName"] = $("#pedalboard-saving .preset-name").val();
 	localStorage["presetPath"] = presetPath;
-	console.log("test");
 	isPresetEdited = false;
 	isFirstRun = true;
 	pushToUndoStack();
@@ -22133,11 +22138,12 @@ function redo() {
 }
 
 function setPedalboardSavingHeader() {
-	console.log(isPresetEdited);
+	console.log("ipe: " + isPresetEdited);
 	if (isPresetEdited) {
 		$(".pedalboard-saving-header").css("color", "red");
 		$(".pedalboard-saving-header").html("Pedalboard Saving (Unsaved)");
 	} else {
+		console.log("here");
 		$(".pedalboard-saving-header").css("color", "black");
 		$(".pedalboard-saving-header").html("Pedalboard Saving");
 	}
@@ -22160,9 +22166,11 @@ function setPedalboardsLockStatus() {
 	}
 
 	var isEnabled = !isPedalboardLocked ? "enable" : "disable";
-	$draggable.filter( function( i, elem ) {
-		return elem.classList.contains("pedalboard");
-	}).draggabilly(isEnabled);
+	if ($draggable) {
+		$draggable.filter( function( i, elem ) {
+			return elem.classList.contains("pedalboard");
+		}).draggabilly(isEnabled);
+	}	
 }
 
 /*
@@ -22513,16 +22521,28 @@ $("body").on("click", ".item", function (e) {
 	var width = $(this).attr("data-width");
 	var height = $(this).attr("data-height");
 
-	var panel = (selectedObj.classList.contains("pedalboard") && isPedalboardLocked) ?
-	')</span>\<div class="panel_action panel-action-locked">Pedalboard locked.</div>' :
-	')</span>\
-    </div>\
-		<a href="#rotate" class="panel__action">Rotate <i>R</i></a>\
-		<a href="#front" class="panel__action">Move Front <i>]</i></a>\
-		<a href="#back" class="panel__action">Move Back <i>[</i></a>\
-		<a href="#delete" class="panel__action">Delete <i>D</i></a>\
-	</div>';
-	
+	let panel = "";
+	if (selectedObj.classList.contains("pedalboard") && isPedalboardLocked) {
+		panel = ')</span>\<div class="panel_action panel-action-locked">Pedalboard locked.</div>';
+	} else if (selectedObj.classList.contains("pedal--custom")) {
+		panel = ')</span>\
+		</div>\
+			<a href="#rename" class="panel__action">Rename <i>D</i></a>\
+			<a href="#rotate" class="panel__action">Rotate <i>R</i></a>\
+			<a href="#front" class="panel__action">Move Front <i>]</i></a>\
+			<a href="#back" class="panel__action">Move Back <i>[</i></a>\
+			<a href="#delete" class="panel__action">Delete <i>D</i></a>\
+		</div>';	
+	} else {
+		panel = ')</span>\
+		</div>\
+			<a href="#rotate" class="panel__action">Rotate <i>R</i></a>\
+			<a href="#front" class="panel__action">Move Front <i>]</i></a>\
+			<a href="#back" class="panel__action">Move Back <i>[</i></a>\
+			<a href="#delete" class="panel__action">Delete <i>D</i></a>\
+		</div>';
+	}
+
 	var markup =
 		'<div class="panel" data-id="#' +
 		id +
@@ -22547,11 +22567,25 @@ $("body").on("click", ".item", function (e) {
 	e.stopPropagation();
 });
 
+$("body").on("click", 'a[href="#rename"]', function () {
+	e.stopImmediatePropagation();
+	$("#rename-pedal-modal").modal("show");
+	var id = $(this).parents(".panel").data("id");
+	$(id).addClass("pedal-renaming")
+	var pedalName = $(id).find(".pedal__name").html();
+	$(".rename-pedal-modal-input").val(pedalName);
+});
+
+$("body").on("click", "#rename-pedal-confirmation", function () {
+	e.stopImmediatePropagation();
+	var newPedalName = $(".rename-pedal-modal-input").val();
+	var renamedPedal = $(".pedal-renaming").find(".pedal__name");
+	renamedPedal.html(newPedalName);
+	$(".pedal-renaming").removeClass("pedal-renaming");
+	$("#rename-pedal-modal").modal("hide");
+});
+
 $("body").on("click", 'a[href="#rotate"]', function (e) {
-	/*
-	var selectedObj = $(id)[0];	
-	if (selectedObj.classList.contains("pedalboard") && isPedalboardLocked) return;
-	*/	
 	e.stopPropagation();
 	e.stopImmediatePropagation();
 

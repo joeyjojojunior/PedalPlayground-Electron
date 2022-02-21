@@ -8782,7 +8782,7 @@ body {
   margin: 0;
 }
 .horizontal-sidebar-btns .btn {
-  width: 134px;
+  width: 100%;
 }
 
 .radio-btn-container {
@@ -8815,7 +8815,7 @@ body {
   user-select: none;
   display: none;
 }
-@media (max-width: 925px), (max-height: 890px) {
+@media (max-width: 925px), (max-height: 855px) {
   .sidebar-close {
     display: block;
     position: absolute;
@@ -8843,7 +8843,7 @@ body {
   user-select: none;
   display: none;
 }
-@media (max-width: 925px), (max-height: 890px) {
+@media (max-width: 925px), (max-height: 855px) {
   .sidebar-open {
     display: block;
     position: fixed;
@@ -8859,12 +8859,12 @@ body {
     box-shadow: 8px 8px 20px rgba(133, 130, 255, 0.5);
   }
 }
-@media (max-width: 925px) and (prefers-color-scheme: dark), (max-height: 890px) and (prefers-color-scheme: dark) {
+@media (max-width: 925px) and (prefers-color-scheme: dark), (max-height: 855px) and (prefers-color-scheme: dark) {
   .sidebar-open {
     box-shadow: none;
   }
 }
-@media (max-width: 925px), (max-height: 890px) {
+@media (max-width: 925px), (max-height: 855px) {
   .sidebar-open:before, .sidebar-open:after {
     content: " ";
     position: absolute;
@@ -8872,7 +8872,7 @@ body {
     border-radius: 3px;
   }
 }
-@media (max-width: 925px), (max-height: 890px) {
+@media (max-width: 925px), (max-height: 855px) {
   .sidebar-open:before {
     width: 4px;
     height: 30px;
@@ -8880,7 +8880,7 @@ body {
     top: 17px;
   }
 }
-@media (max-width: 925px), (max-height: 890px) {
+@media (max-width: 925px), (max-height: 855px) {
   .sidebar-open:after {
     width: 30px;
     height: 4px;
@@ -8907,7 +8907,7 @@ body {
 .sidebar .select2-container {
   width: 100%;
 }
-@media (max-width: 925px), (max-height: 890px) {
+@media (max-width: 925px), (max-height: 855px) {
   .sidebar {
     position: fixed;
     top: 0;
@@ -8923,12 +8923,12 @@ body {
     background: rgba(0, 0, 0, 0.7);
   }
 }
-@media (max-width: 925px) and (prefers-color-scheme: dark), (max-height: 890px) and (prefers-color-scheme: dark) {
+@media (max-width: 925px) and (prefers-color-scheme: dark), (max-height: 855px) and (prefers-color-scheme: dark) {
   .sidebar {
     background: rgba(133, 130, 255, 0.5);
   }
 }
-@media (max-width: 925px), (max-height: 890px) {
+@media (max-width: 925px), (max-height: 855px) {
   .sidebar .sidebar__inner {
     transition: all 0.3s;
     position: absolute;
@@ -8940,12 +8940,12 @@ body {
     background-color: #fff;
   }
 }
-@media (max-width: 925px) and (prefers-color-scheme: dark), (max-height: 890px) and (prefers-color-scheme: dark) {
+@media (max-width: 925px) and (prefers-color-scheme: dark), (max-height: 855px) and (prefers-color-scheme: dark) {
   .sidebar .sidebar__inner {
     background-color: #282d30;
   }
 }
-@media (max-width: 925px), (max-height: 890px) {
+@media (max-width: 925px), (max-height: 855px) {
   .is-slid .sidebar {
     opacity: 1;
     pointer-events: all;
@@ -8971,7 +8971,7 @@ body {
     border: 0;
   }
 }
-@media (max-height: 890px) {
+@media (max-height: 855px) {
   .sidebar {
     max-width: 100%;
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.16);
@@ -8979,7 +8979,7 @@ body {
     border-right: 1px solid rgba(0, 0, 0, 0.13);
   }
 }
-@media (max-height: 890px) and (prefers-color-scheme: dark) {
+@media (max-height: 855px) and (prefers-color-scheme: dark) {
   .sidebar {
     /* Dark theme styles go here */
     background-color: #282d30;

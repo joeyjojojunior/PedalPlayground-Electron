@@ -156,11 +156,11 @@ const createWindow = () => {
           }
       });
     });
-
+    
     ipcMain.on('set-preset-path', (event, newPath) => {
       presetPath = (newPath.length > 0) ? newPath : null; 
     });
-
+    
     mainWindow.webContents.openDevTools()
   });
   // Open the DevTools. 
@@ -181,12 +181,16 @@ app.whenReady().then(() => {
 
 app.on('browser-window-blur', function () {
   globalShortcut.unregister('CommandOrControl+R');
+  globalShortcut.unregister('Shift+CommandOrControl+R');
   globalShortcut.unregister('F5');
 });
 
 app.on('browser-window-focus', function () {
   globalShortcut.register("CommandOrControl+R", () => {
       console.log("CommandOrControl+R is pressed: Shortcut Disabled");
+  });
+  globalShortcut.register("Shift+CommandOrControl+R", () => {
+    console.log("CommandOrControl+R is pressed: Shortcut Disabled");
   });
   globalShortcut.register("F5", () => {
       console.log("F5 is pressed: Shortcut Disabled");

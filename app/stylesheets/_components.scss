@@ -8,7 +8,7 @@ $canvas-bg-dark: #2e3337;
 $body-color-dark: lighten($dark, 60%);
 $site-header-height: 40px;
 $sidebar-width: 290px;
-$max-win-height: 890px;
+$max-win-height: 855px;
 $max-win-width: 925px;
 $sidebar-padding: 8px;
 $button-padding: 3px;
@@ -142,7 +142,7 @@ body {
 	justify-content: space-between;
 	margin: 0;
 	.btn {
-		width: 134px;
+		width: 100%;
 	}
 }
 
@@ -780,10 +780,6 @@ body {
 		height: $input-height;
 	}
 }
-
-
-
-
 
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
 	background: $brand-primary;
